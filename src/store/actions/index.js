@@ -1,2 +1,2 @@
-export * from './adminAction'
+export * from './authAction'
 export * from './userAction'

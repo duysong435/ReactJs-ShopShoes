@@ -1,0 +1,28 @@
+.slick-prev {
+    display: none !important;
+}
+
+.slick-next {
+    display: none !important;
+}
+
+.home-baner {
+    height: 400px;
+    width: 100%;
+    // background-color: #eee;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 100%;
+    background-image: url('../../assets/baner11.jpg');
+}
+
+.slick-dots {
+    position: absolute !important;
+    bottom: 10px !important;
+
+    li {
+        button {
+            width: 10px !important;
+        }
+    }
+}

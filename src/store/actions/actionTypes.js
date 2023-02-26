@@ -1,5 +1,9 @@
 const actionTypes = {
-
+    //
+    ADD_USER_SUCCESS: "ADD_USER_SUCCESS",
+    ADD_USER_FAILDED: "ADD_USER_FAILDED",
+    USER_LOGIN_SUCCESS: 'USER_LOGIN_SUCCESS',
+    USER_LOGIN_FAILDED: 'USER_LOGIN_FAILDED',
 }
 
 export default actionTypes;
