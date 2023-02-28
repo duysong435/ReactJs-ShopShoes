@@ -9,9 +9,7 @@ import {
   Introduce
 } from './containers/public'
 
-import {
-  ManageUser
-} from './containers/system'
+import Dashboard from "./containers/system/Dashboard";
 
 function App() {
   return (
@@ -23,7 +21,7 @@ function App() {
         <Route path={path.MEN} element={<Men />} />
         <Route path={path.WOMAN} element={<Woman />} />
         <Route path={path.CONTACT} element={<Contact />} />
-        <Route path={path.SYSTEM} element={<ManageUser />} />
+        <Route path={path.SYSTEM} element={<Dashboard />} />
       </Routes>
     </div>
   );

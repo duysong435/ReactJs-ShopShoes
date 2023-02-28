@@ -5,5 +5,6 @@ export const path = {
     MEN: '/shoe-man',
     WOMAN: '/shoe-woman',
     CONTACT: '/contact',
-    SYSTEM: '/system'
+    SYSTEM: '/system',
+    TEST:'/test'
 }

@@ -16,7 +16,7 @@ const NotificationDropdown = () => {
     setDropdownPopoverShow(false);
   };
   return (
-    <>
+    <React.Fragment>
       <a
         className="text-blueGray-500 block py-1 px-3"
         href="#pablo"
@@ -43,7 +43,7 @@ const NotificationDropdown = () => {
           }
           onClick={e => e.preventDefault()}
         >
-          Action
+          Đổi mật khẩu
         </a>
         <a
           href="#pablo"
@@ -52,9 +52,9 @@ const NotificationDropdown = () => {
           }
           onClick={e => e.preventDefault()}
         >
-          Another action
+          Đăng xuất
         </a>
-        <a
+        {/* <a
           href="#pablo"
           className={
             "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
@@ -62,9 +62,9 @@ const NotificationDropdown = () => {
           onClick={e => e.preventDefault()}
         >
           Something else here
-        </a>
-        <div className="h-0 my-2 border border-solid border-blueGray-100" />
-        <a
+        </a> */}
+        {/* <div className="h-0 my-2 border border-solid border-blueGray-100" /> */}
+        {/* <a
           href="#pablo"
           className={
             "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
@@ -72,9 +72,9 @@ const NotificationDropdown = () => {
           onClick={e => e.preventDefault()}
         >
           Seprated link
-        </a>
+        </a> */}
       </div>
-    </>
+    </React.Fragment>
   );
 };
 

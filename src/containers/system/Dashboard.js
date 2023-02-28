@@ -1,18 +1,34 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from "react-redux";
 import Sidebar from '../../components/Sidebar';
-import { handleLogin } from '../../store/actions';
 import ManageProduct from './ManageProduct';
+import ManageUser from './ManageUser';
 
-const ManageUser = (props) => {
+const arrList = ['ManageUser', 'ManageProduct', 'Orders']
 
+const Dashboard = (props) => {
+    const [tab, setTab] = useState('ManageUser')
 
-    console.log("isLoggin: ", props.isLogin)
+    const handleChangeTab = (data) => {
+        for (let i = 0; i < arrList.length; i++)
+            if (arrList[i] === data) {
+                // alert(data)
+                setTab(data)
+                // console.log(tab)
+            }
+        // alert(data)
+    }
+
+    // console.log("isLoggin: ", props.isLogin)
     return (
         <React.Fragment>
-            <Sidebar />
-            <ManageProduct />
-            <div className='bg-red-200 w-full h-[100vh]'>
+            <Sidebar
+                onChangeTab={handleChangeTab}
+            />
+            <div className='relative md:ml-64  h-[100vh]'>
+                {
+                    'ManageUser' === tab ? <ManageUser /> : <ManageProduct />
+                }
             </div>
         </React.Fragment>
     )
@@ -26,8 +42,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        login: (email, password) => dispatch(handleLogin(email, password))
+
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ManageUser);
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

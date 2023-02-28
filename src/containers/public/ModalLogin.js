@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { connect } from "react-redux";
 import { FaWindowClose } from "react-icons/fa";
-import { handleLogin } from '../../store/actions';
+import { authLogin } from '../../store/actions';
 
 const ModalLogin = (props) => {
   const [email, setEmail] = useState('');
@@ -97,7 +97,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    login: (email, password) => dispatch(handleLogin(email, password))
+    login: (email, password) => dispatch(authLogin(email, password))
   };
 };
 

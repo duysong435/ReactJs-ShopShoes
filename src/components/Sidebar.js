@@ -7,12 +7,36 @@ import {
   FaTv
 } from "react-icons/fa";
 
+import {
+  BsFillPeopleFill
+} from "react-icons/bs";
 
-import NotificationDropdown from "./NotificationDropdown.js";
+import {
+  GiConverseShoe
+} from "react-icons/gi";
+
+import {
+  IoIosListBox
+} from "react-icons/io";
+
+
+// import NotificationDropdown from "./NotificationDropdown.js";
 import UserDropdown from "./UserDropdown.js";
 
-export default function Sidebar() {
+
+
+
+export default function Sidebar(props) {
   const [collapseShow, setCollapseShow] = useState("hidden");
+  const [activeTab, setActiveTab] = useState('ManageUser')
+
+  const handleChangeTab = (id) => {
+
+    props.onChangeTab(id);
+    setActiveTab(id)
+
+  }
+
   return (
     <>
       <nav className="md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4 px-6">
@@ -34,9 +58,9 @@ export default function Sidebar() {
           </Link>
           {/* User */}
           <ul className="md:hidden items-center flex flex-wrap list-none">
-            <li className="inline-block relative">
+            {/* <li className="inline-block relative">
               <NotificationDropdown />
-            </li>
+            </li> */}
             <li className="inline-block relative">
               <UserDropdown />
             </li>
@@ -92,30 +116,44 @@ export default function Sidebar() {
               </li> */}
 
               <li className="items-center">
-                <Link
-                  className="text-blueGray hover:text-red-400 text-xs uppercase py-3 font-bold block"
-                  to="/"
+                <div
+                  className="flex text-blueGray hover:text-red-400 text-xs uppercase py-3 font-bold gap-2 cursor-pointer"
+                  onClick={() => handleChangeTab('ManageUser')}
                 >
-                  <i className="fas fa-newspaper text-blueGray mr-2 text-sm"></i> Quản lý người dùng
-                </Link>
+                  <div className="text-xl">
+                    <BsFillPeopleFill />
+                  </div>
+                  <span className={activeTab === 'ManageUser' ? 'text-red-400' : ''}>
+                    Quản lý người dùng
+                  </span>
+                </div>
               </li>
 
               <li className="items-center">
-                <Link
-                  className="text-blueGray hover:text-red-400 text-xs uppercase py-3 font-bold block"
-                  to="/"
+                <div
+                  className="flex text-blueGray hover:text-red-400 text-xs uppercase py-3 font-bold gap-2 cursor-pointer"
+                  onClick={() => handleChangeTab('ManageProduct')}
                 >
-                  <i className="fas fa-user-circle text-blueGray mr-2 text-sm"></i> Quản lý sản phẩm
-                </Link>
+                  <div className="text-xl">
+                    <GiConverseShoe />
+                  </div>
+                  <span className={activeTab === 'ManageProduct' ? 'text-red-400' : ''}>
+                    Quản lý sản phẩm
+                  </span>
+                </div>
               </li>
 
               <li className="items-center">
-                <Link
-                  className="text-blueGray hover:text-red-400 text-xs uppercase py-3 font-bold block"
-                  to="/"
+                <div
+                  className="flex text-blueGray hover:text-red-400 text-xs uppercase py-3 font-bold gap-2 cursor-pointer"
                 >
-                  <i className="fas fa-fingerprint text-blueGray mr-2 text-sm"></i> Quản lý đơn hàng
-                </Link>
+                  <div className="text-xl">
+                    <IoIosListBox />
+                  </div>
+                  <span className={activeTab === '' ? 'text-red-400' : ''}>
+                    Quản lý đơn hàng
+                  </span>
+                </div>
               </li>
 
               {/* <li className="items-center">

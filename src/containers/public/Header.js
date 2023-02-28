@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { connect } from "react-redux";
 import logo from '../../assets/logo/logo-header.png'
 
 import Navigation from './Navigation';
@@ -9,13 +10,21 @@ import {
     FaUser
 } from "react-icons/fa";
 import Login from './ModalLogin';
+import UserDropdown from '../../components/UserDropdown';
 
 const Header = (props) => {
     const [showModal, setShowModal] = useState(false)
+    const [showDropdown, setShowDropdown] = useState(false)
+
     const onShowModal = (data) => {
         setShowModal(data)
         // console.log(data)
     }
+
+    const handleShowDropdown = () => {
+        setShowDropdown(!showDropdown)
+    }
+
     return (
         <React.Fragment>
             <div className='w-full h-[69px] bg-white'>
@@ -38,14 +47,23 @@ const Header = (props) => {
                             </Link>
                         </div>
                         <div className='flex items-center'>
-                            <FaUser
-                                className='cursor-pointer'
-                                size={'20px'} width={'24px'}
-                                onClick={() => {
-                                    setShowModal(!showModal)
-                                }}
+                            {
+                                props.isLogin === true ?
+                                    <div>
+                                        <UserDropdown />
 
-                            />
+                                    </div>
+                                    :
+                                    <FaUser
+                                        className='cursor-pointer'
+                                        size={'20px'} width={'24px'}
+                                        onClick={() => {
+                                            setShowModal(!showModal)
+                                        }}
+
+                                    />
+                            }
+
                             <FaGripLinesVertical size={'20px'} className='opacity-40 mx-2' />
                             <FaShoppingBag size={'20px'} fontSize={'24px'} />
                         </div>
@@ -58,4 +76,16 @@ const Header = (props) => {
     )
 }
 
-export default Header
+const mapStateToProps = (state) => {
+    return {
+        isLogin: state.auth.isLoggedIn
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        // authLogin: (email, password) => dispatch(authLogin(email, password))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

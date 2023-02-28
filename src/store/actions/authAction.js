@@ -7,12 +7,12 @@ const getAllUser = () => {
 
 }
 
-const handleLogin = (email, password) => {
+const authLogin = (email, password) => {
     return async (dispatch, getState) => {
         try {
             const data = await handleLoginService(email, password);
-            console.log(data)
-            if (data && data.errCode === 0) {
+            // console.log(data)
+            if (data && data?.data?.errCode === 0) {
                 dispatch({
                     type: actionTypes.USER_LOGIN_SUCCESS,
                     data: data?.data
@@ -27,7 +27,20 @@ const handleLogin = (email, password) => {
     }
 }
 
+const authLogout = () => {
+    return async (dispatch, getState) => {
+        try {
+            dispatch({
+                type: actionTypes.USER_LOGOUT_SUCCESS
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+}
+
 export {
     getAllUser,
-    handleLogin
+    authLogin,
+    authLogout
 }

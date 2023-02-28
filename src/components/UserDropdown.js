@@ -1,8 +1,16 @@
 import React from "react";
 import { createPopper } from "@popperjs/core";
+import { connect } from "react-redux";
 import team from '../assets/img/team.jpg'
+import { path } from '../utils/constant'
 
-const UserDropdown = () => {
+import {
+  FaUser
+} from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { authLogout } from "../store/actions/authAction";
+
+const UserDropdown = (props) => {
   // dropdown props
   const [dropdownPopoverShow, setDropdownPopoverShow] = React.useState(false);
   const btnDropdownRef = React.createRef();
@@ -16,10 +24,15 @@ const UserDropdown = () => {
   const closeDropdownPopover = () => {
     setDropdownPopoverShow(false);
   };
+
+  const handleLogout = () => {
+    props.authLogout()
+  }
+
   return (
-    <>
-      <a
-        className="text-blueGray-500 block"
+    <React.Fragment>
+      <div
+        className="block cursor-pointer"
         href="#pablo"
         ref={btnDropdownRef}
         onClick={e => {
@@ -28,63 +41,79 @@ const UserDropdown = () => {
         }}
       >
         <div className="items-center flex">
-          <span className="w-12 h-12 text-sm text-white bg-blueGray-200 inline-flex items-center justify-center rounded-full">
-            <img
+          <span className="w-12 h-12 text-sm  bg-blueGray-200 inline-flex items-center justify-center rounded-full">
+            {/* <img
               alt="..."
               className="w-full rounded-full align-middle border-none shadow-lg"
               src={team}
+            /> */}
+            <FaUser
+              size={'20px'} width={'24px'}
             />
           </span>
         </div>
-      </a>
+      </div>
       <div
         ref={popoverDropdownRef}
         className={
           (dropdownPopoverShow ? "block " : "hidden ") +
-          "bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg mt-1"
+          "bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg mt-1 border-t-[1px]"
         }
         style={{ minWidth: "12rem" }}
       >
-        <a
+        <Link
+          to={path.SYSTEM}
+          className={
+            "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700 hover:text-red-400"
+          }
+        // onClick={e => e.preventDefault()}
+        >
+          Thông tin tài khoản
+        </Link>
+        {/* <a
           href="#pablo"
           className={
             "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
           }
           onClick={e => e.preventDefault()}
         >
-          Action
-        </a>
-        <a
+
+        </a> */}
+        <Link
           href="#pablo"
           className={
-            "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
+            "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700 hover:text-red-400"
           }
           onClick={e => e.preventDefault()}
         >
-          Another action
-        </a>
-        <a
-          href="#pablo"
-          className={
-            "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-          }
-          onClick={e => e.preventDefault()}
-        >
-          Something else here
-        </a>
+          Đổi mật khẩu
+        </Link>
         <div className="h-0 my-2 border border-solid border-blueGray-100" />
-        <a
+        <Link
           href="#pablo"
           className={
-            "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
+            "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700 hover:text-red-400"
           }
-          onClick={e => e.preventDefault()}
+          onClick={() => handleLogout()}
         >
-          Seprated link
-        </a>
+          Đăng xuất
+        </Link>
       </div>
-    </>
+    </React.Fragment>
   );
 };
 
-export default UserDropdown;
+const mapStateToProps = (state) => {
+  return {
+    isLogin: state.auth.isLoggedIn
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    // authLogin: (email, password) => dispatch(authLogin(email, password))
+    authLogout: () => dispatch(authLogout())
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserDropdown);
