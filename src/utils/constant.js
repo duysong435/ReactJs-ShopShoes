@@ -6,5 +6,5 @@ export const path = {
     WOMAN: '/shoe-woman',
     CONTACT: '/contact',
     SYSTEM: '/system',
-    TEST:'/test'
+    REGISTER: '/register'
 }

@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { connect } from "react-redux";
 import { FaWindowClose } from "react-icons/fa";
 import { authLogin } from '../../store/actions';
+import { Link } from 'react-router-dom';
+import { path } from '../../utils/constant';
 
 const ModalLogin = (props) => {
   const [email, setEmail] = useState('');
@@ -65,7 +67,7 @@ const ModalLogin = (props) => {
               </div>
             </div>
             {/*footer*/}
-            <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+            <div className="flex items-center justify-end p-6 pb-2 border-t border-solid border-slate-200 rounded-b">
               <button
                 className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                 type="button"
@@ -80,6 +82,9 @@ const ModalLogin = (props) => {
               >
                 Đăng Nhập
               </button>
+            </div>
+            <div className='text-right mr-6 my-2'>
+              <span>Bạn chưa có tìa khoản<Link to={path.REGISTER} className='text-blue-500 px-1'>Đăng ký?</Link></span>
             </div>
           </div>
         </div>

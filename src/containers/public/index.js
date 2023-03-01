@@ -6,3 +6,5 @@ export { default as Men } from './Men'
 export { default as Woman } from './Woman'
 export { default as Contact } from './Contact'
 export { default as Introduce } from './Introduce'
+export { default as Register } from './Register'
+

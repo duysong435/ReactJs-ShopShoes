@@ -3,7 +3,9 @@ import actionTypes from "../actions/actionTypes";
 const initState = {
     isLoggedIn: false,
     token: null,
-    role: ''
+    role: '',
+    errMessage: '',
+    errCode: ''
 }
 
 const authReducer = (state = initState, action) => {
@@ -27,6 +29,18 @@ const authReducer = (state = initState, action) => {
                 isLoggedIn: false,
                 token: null,
                 role: ''
+            }
+        case actionTypes.ADD_USER_SUCCESS:
+            return {
+                ...state,
+                errMessage: action?.data?.errMessage,
+                errCode: action?.data?.errCode
+            }
+        case actionTypes.ADD_USER_FAILDED:
+            return {
+                ...state,
+                errMessage: action?.data?.errMessage,
+                errCode: action?.data?.errCode
             }
         default:
             return state;
