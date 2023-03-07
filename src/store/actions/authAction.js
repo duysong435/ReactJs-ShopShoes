@@ -3,6 +3,9 @@ import {
     handleLoginService,
     handleRegisterService
 } from "../../services/userServices";
+import {
+    handleAddProductService
+} from '../../services/productService'
 import { toast } from 'react-toastify'
 
 
@@ -67,7 +70,16 @@ const authRegister = (data) => {
                     data: response
                 })
             } else {
-                toast.error('Register failded!')
+                toast.error(response?.errMessage, {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
                 dispatch({
                     type: actionTypes.ADD_USER_FAILDED,
                     data: response
@@ -83,9 +95,62 @@ const authRegister = (data) => {
     }
 }
 
+const authAddProduct = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            const response = await handleAddProductService(data)
+            if (response && response?.errCode === 0) {
+                toast.success('Register success!', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
+                dispatch({
+                    type: actionTypes.ADD_PRODUCT_SUCCESS
+                })
+            } else {
+                toast.error(response?.errMessage, {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
+                dispatch({
+                    type: actionTypes.ADD_PRODUCT_FAILDED
+                })
+            }
+        } catch (error) {
+            toast.error('Register failded!', {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            })
+            dispatch({
+                type: actionTypes.ADD_PRODUCT_FAILDED
+            })
+            console.log(error)
+        }
+    }
+}
+
 export {
     getAllUser,
     authLogin,
     authLogout,
-    authRegister
+    authRegister,
+    authAddProduct
 }

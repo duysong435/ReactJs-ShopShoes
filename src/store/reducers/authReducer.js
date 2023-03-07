@@ -42,6 +42,14 @@ const authReducer = (state = initState, action) => {
                 errMessage: action?.data?.errMessage,
                 errCode: action?.data?.errCode
             }
+        case actionTypes.ADD_PRODUCT_SUCCESS:
+            return {
+                ...state
+            }
+        case actionTypes.ADD_PRODUCT_FAILDED:
+            return {
+                ...state
+            }
         default:
             return state;
     }
