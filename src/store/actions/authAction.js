@@ -1,5 +1,7 @@
 import actionTypes from "./actionTypes";
 import {
+    deleteUserService,
+    getAllUserService,
     handleLoginService,
     handleRegisterService
 } from "../../services/userServices";
@@ -147,10 +149,89 @@ const authAddProduct = (data) => {
     }
 }
 
+const gettAllUser = () => {
+    return async (dispatch, getState) => {
+        try {
+            const response = await getAllUserService();
+            // console.log(response)
+            if (response && response?.errCode === 0) {
+                dispatch({
+                    type: actionTypes.GET_ALL_USER_SUCCESS,
+                    data: response?.response
+                })
+            } else {
+                dispatch({
+                    type: actionTypes.GET_ALL_USER_FAILDED
+                })
+            }
+        } catch (error) {
+            dispatch({
+                type: actionTypes.GET_ALL_USER_FAILDED
+            })
+            console.log(error)
+        }
+    }
+}
+
+const authDeleteUser = (id) => {
+    return async (dispatch, getState) => {
+        try {
+            const response = await deleteUserService(id);
+            console.log(response)
+            if (response && response?.errCode === 0) {
+                toast.success('Delete user success!', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
+                dispatch({
+                    type: actionTypes.DELETE_USER_SUCCESS,
+                    data: response?.response
+                })
+            } else {
+                toast.error('Delete user failded!', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
+                dispatch({
+                    type: actionTypes.DELETE_USER_FAILDED
+                })
+            }
+        } catch (error) {
+            toast.error('Delete user failded!', {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            })
+            dispatch({
+                type: actionTypes.DELETE_USER_FAILDED
+            })
+        }
+    }
+}
+
 export {
     getAllUser,
     authLogin,
     authLogout,
     authRegister,
-    authAddProduct
+    authAddProduct,
+    gettAllUser,
+    authDeleteUser
 }

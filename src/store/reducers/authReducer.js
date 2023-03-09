@@ -5,7 +5,9 @@ const initState = {
     token: null,
     role: '',
     errMessage: '',
-    errCode: ''
+    errCode: '',
+    arrProduct: [],
+    arrUser: []
 }
 
 const authReducer = (state = initState, action) => {
@@ -47,6 +49,25 @@ const authReducer = (state = initState, action) => {
                 ...state
             }
         case actionTypes.ADD_PRODUCT_FAILDED:
+            return {
+                ...state
+            }
+        case actionTypes.GET_ALL_USER_SUCCESS:
+            // console.log(action?.data?.rows)
+            state.arrUser = action?.data?.rows
+            return {
+                ...state,
+                // arrUser: action?.data?.rows
+            }
+        case actionTypes.GET_ALL_USER_FAILDED:
+            return {
+                ...state
+            }
+        case actionTypes.DELETE_USER_SUCCESS:
+            return {
+                ...state
+            }
+        case actionTypes.DELETE_USER_FAILDED:
             return {
                 ...state
             }

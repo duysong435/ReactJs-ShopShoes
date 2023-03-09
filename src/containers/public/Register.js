@@ -8,6 +8,8 @@ import {
 } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
+import { handleRegisterService } from '../../services/userServices';
+import { toast } from 'react-toastify';
 
 const Register = (props) => {
     const navigate = useNavigate();
@@ -17,23 +19,50 @@ const Register = (props) => {
         rePassword: '',
         firstName: '',
         lastName: '',
+        address: '',
+        phoneNumber: ''
     });
 
 
 
     const handleRegister = async () => {
         try {
-            await props.register(user)
-            if (await props.errCode === 0) {
-                setUser({
-                    email: '',
-                    password: '',
-                    rePassword: '',
-                    firstName: '',
-                    lastName: '',
+            // const data = await props.register(user)
+            // console.log('asdsaddsdsasasdads', data)
+            const data = await handleRegisterService(user)
+            if (data && data.errCode === 0) {
+                toast.success('Register success!', {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
+                // setUser({
+                //     email: '',
+                //     password: '',
+                //     rePassword: '',
+                //     firstName: '',
+                //     lastName: '',
+                //     address: '',
+                //     phoneNumber: ''
+                // })
+                navigate('/')
+            } else {
+                toast.error('Register failded!', {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
                 })
             }
-            // navigate('/')
             // alert(await     props.errMessage)
         } catch (error) {
             console.log(error)
@@ -102,6 +131,38 @@ const Register = (props) => {
                                         value={user.email}
                                         onChange={(e) => {
                                             setUser({ ...user, email: e.target.value })
+                                        }}
+                                    />
+                                </div>
+                                <div className="col-span-6 sm:col-span-3">
+                                    <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
+                                        Số điện thoại
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="phoneNumber"
+                                        id="phoneNumber"
+                                        className="mt-1 block w-full h-8 focus:outline px-2 rounded-md border-[1px] outline-none
+                                            focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                        value={user.phoneNumber}
+                                        onChange={(e) => {
+                                            setUser({ ...user, phoneNumber: e.target.value })
+                                        }}
+                                    />
+                                </div>
+                                <div className="col-span-6 sm:col-span-3">
+                                    <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+                                        Địa chỉ
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="address"
+                                        id="address"
+                                        className="mt-1 block w-full h-8 focus:outline px-2 rounded-md border-[1px] outline-none
+                                            focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                        value={user.address}
+                                        onChange={(e) => {
+                                            setUser({ ...user, address: e.target.value })
                                         }}
                                     />
                                 </div>

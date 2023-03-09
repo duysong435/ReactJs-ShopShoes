@@ -1,12 +1,19 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from "react-redux";
-import Sidebar from '../../components/Sidebar';
-import { authLogin } from '../../store/actions';
+// import Sidebar from '../../components/Sidebar';
+import {
+    authDeleteUser,
+    authLogin,
+    authRegister,
+    gettAllUser
+} from '../../store/actions';
 
 import {
     FaEdit,
     FaTrashAlt
 } from "react-icons/fa";
+import { deleteUserService, getAllUserService } from '../../services/userServices';
+import { toast } from 'react-toastify';
 
 const ManageUser = (props) => {
 
@@ -22,11 +29,38 @@ const ManageUser = (props) => {
         phoneNumber: ''
     })
 
-    const handleLogin = () => {
-        props.authLogin(user.email,user.password)
+    const [arrUsers, setArrUsers] = useState([])
+
+    const handleAddUser = () => {
+        props.addUser(user)
     }
 
-    // console.log("isLoggin: ", props.isLogin)
+    const handleDeleteUser = async (id) => {
+        const respone = await deleteUserService(id)
+        if (respone && respone?.errCode === 0) {
+            toast.success('Register success!', {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            })
+            props.getAllUser()
+
+        }
+    }
+
+
+    useEffect(() => {
+        props.getAllUser()
+    }, [])
+
+    console.log(arrUsers)
+
+    console.log(user)
     return (
         <div className='ml-2'>
             <div className="hidden sm:block" aria-hidden="true">
@@ -59,11 +93,12 @@ const ManageUser = (props) => {
                                                 className="mt-1 block w-full h-8 focus:outline px-2 rounded-md border-gray-300 shadow-sm 
                                             focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                                 value={user.email}
+                                                onChange={(e) => setUser({ ...user, email: e.target.value })}
                                             />
                                         </div>
 
                                         <div className="col-span-6 sm:col-span-3">
-                                            <label htmlFor="last-name" className="block text-sm font-medium text-gray-700">
+                                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                                                 Password
                                             </label>
                                             <input
@@ -72,6 +107,8 @@ const ManageUser = (props) => {
                                                 id="password"
                                                 className="mt-1 block w-full h-8 focus:outline px-2 rounded-md border-gray-300 shadow-sm 
                                             focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                value={user.password}
+                                                onChange={(e) => setUser({ ...user, password: e.target.value })}
                                             />
                                         </div>
                                         <div className="col-span-6 sm:col-span-3">
@@ -84,6 +121,8 @@ const ManageUser = (props) => {
                                                 id="first-name"
                                                 className="mt-1 block w-full h-8 focus:outline px-2 rounded-md border-gray-300 shadow-sm 
                                             focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                value={user.firstName}
+                                                onChange={(e) => setUser({ ...user, firstName: e.target.value })}
                                             />
                                         </div>
 
@@ -97,6 +136,8 @@ const ManageUser = (props) => {
                                                 id="last-name"
                                                 className="mt-1 block w-full h-8 focus:outline px-2 rounded-md border-gray-300 shadow-sm 
                                             focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                value={user.lastName}
+                                                onChange={(e) => setUser({ ...user, lastName: e.target.value })}
                                             />
                                         </div>
 
@@ -110,6 +151,8 @@ const ManageUser = (props) => {
                                                 id="address"
                                                 className="mt-1 block w-full h-8 focus:outline px-2 rounded-md border-gray-300 shadow-sm 
                                             focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                value={user.address}
+                                                onChange={(e) => setUser({ ...user, address: e.target.value })}
                                             />
                                         </div>
                                         <div className="col-span-6 sm:col-span-6 lg:col-span-3">
@@ -122,6 +165,8 @@ const ManageUser = (props) => {
                                                 id="phoneNumber"
                                                 className="mt-1 block w-full h-8 focus:outline px-2 rounded-md border-gray-300 shadow-sm 
                                             focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                value={user.phoneNumber}
+                                                onChange={(e) => setUser({ ...user, phoneNumber: e.target.value })}
                                             />
                                         </div>
 
@@ -134,6 +179,8 @@ const ManageUser = (props) => {
                                                 name="dender"
                                                 className="mt-1 block w-full  rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm 
                                             focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                                value={user.gender}
+                                                onChange={(e) => setUser({ ...user, gender: e.target.value })}
                                             >
                                                 <option>Famale</option>
                                                 <option>Male</option>
@@ -149,6 +196,8 @@ const ManageUser = (props) => {
                                                 name="role"
                                                 className="mt-1 block w-full  rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm 
                                             focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                                value={user.roleId}
+                                                onChange={(e) => setUser({ ...user, roleId: e.target.value })}
                                             >
                                                 <option>Admin</option>
                                                 <option>User</option>
@@ -218,7 +267,7 @@ const ManageUser = (props) => {
                                         className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm
                                      hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
 
-                                        onClick={() => handleLogin()}
+                                        onClick={() => handleAddUser()}
                                     >
                                         Save
                                     </button>
@@ -278,42 +327,46 @@ const ManageUser = (props) => {
                                         >
                                             Action
                                         </th>
-                                        {/* <th
-                                        scope="col"
-                                        className="px-6 py-3 text-xs font-bold text-right text-gray-500 uppercase "
-                                    >
-                                        Delete
-                                    </th> */}
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200">
-                                    <tr>
-                                        <td className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap">
-                                            1
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
-                                            Jone Doe
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
-                                            jonne62@gmail.com
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-gray-800  text-left whitespace-nowrap">
-                                            0123456789
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-gray-800  text-right whitespace-nowrap">
-                                            Ha Noi
-                                        </td>
-                                        <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-                                            <div className='flex justify-end gap-3'>
-                                                <div className="text-green-500 hover:text-green-700 cursor-pointer text-xl">
-                                                    <FaEdit />
-                                                </div>
-                                                <div className="text-red-500 hover:text-red-700 cursor-pointer text-xl">
-                                                    <FaTrashAlt />
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    {
+                                        props.arrUser && props.arrUser.map((item, index) => {
+                                            return (
+                                                <tr key={index}>
+                                                    <td className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap">
+                                                        {index}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
+                                                        {item.firstName}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
+                                                        {item.email}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm text-gray-800  text-left whitespace-nowrap">
+                                                        {item.phoneNumber}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm text-gray-800  text-right whitespace-nowrap">
+                                                        {item.address}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
+                                                        <div className='flex justify-end gap-3'>
+                                                            <div className="text-green-500 hover:text-green-700 cursor-pointer text-xl">
+                                                                <FaEdit />
+                                                            </div>
+                                                            <div className="text-red-500 hover:text-red-700 cursor-pointer text-xl">
+                                                                <FaTrashAlt onClick={() => {
+                                                                    handleDeleteUser(item.id)
+                                                                }
+                                                                } />
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
+
                                 </tbody>
                             </table>
                         </div>
@@ -326,13 +379,17 @@ const ManageUser = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        isLogin: state.auth.isLoggedIn
+        isLogin: state.auth.isLoggedIn,
+        arrUser: state.auth.arrUser
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        authLogin: (email, password) => dispatch(authLogin(email, password))
+        authLogin: (email, password) => dispatch(authLogin(email, password)),
+        deleteUser: (id) => dispatch(authDeleteUser(id)),
+        getAllUser: () => dispatch(gettAllUser()),
+        addUser: (user) => dispatch(authRegister(user))
     };
 };
 
