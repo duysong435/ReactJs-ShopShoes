@@ -71,7 +71,7 @@ const Register = (props) => {
 
     return (
         <React.Fragment>
-            <Header />
+            {/* <Header /> */}
             <div className=" ">
                 <div className=" w-[40%] my-6 mx-auto max-w-3xl">
                     {/*content*/}

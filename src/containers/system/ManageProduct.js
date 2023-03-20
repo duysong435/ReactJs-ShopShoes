@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { Buffer } from 'buffer';
 import { connect } from "react-redux";
 
 import {
@@ -8,18 +9,27 @@ import {
 } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai"
 import CommonUtils from '../../utils/CommonUtils';
-import { authAddProduct } from '../../store/actions';
-import { handleAddProductService } from '../../services/productService';
+import {
+    authAddProduct,
+    deleteProduct,
+    editProduct,
+    fetchBrand,
+    fetchGender,
+    getAllProduct
+} from '../../store/actions';
+import { CRUD_ACTIOND } from '../../utils/constant';
+// import { getAllProductService, handleAddProductService } from '../../services/productService';
 
 const ManageProduct = (props) => {
     const [product, setProduct] = useState({
         name: '',
+        nameFull: '',
         image: '',
         price: '',
         detail: '',
         brandId: '',
         genderId: '',
-        categoryId: 'ha',
+        categoryId: '',
     })
 
     const [img, setImg] = useState({
@@ -27,9 +37,66 @@ const ManageProduct = (props) => {
         isOpen: false
     })
 
-    const handleCreateProduct = () => {
-        props.authAddProduct(product)
-        // handleAddProductService(product)
+    const [actionUser, setActionUser] = useState(CRUD_ACTIOND.CREATE)
+
+    const handleEditProduct = (product) => {
+        console.log(product)
+
+        let imageBase64 = ''
+        if (product.image) {
+            // const imageBuffer = Buffer.from(JSON.stringify(user.image))
+            // imageBase64 = 'data:image/png;base64,' + imageBuffer.toString('base64')
+            // setImage(imageBase64)
+            imageBase64 = new Buffer(product.image, 'base64').toString('binary')
+        }
+        setProduct({
+            id: product.id,
+            name: product.name,
+            nameFull: product.nameFull,
+            price: product.price,
+            detail: product.detail,
+            brandId: product.brandId,
+            genderId: product.gender,
+            image: imageBase64
+
+
+        })
+        setImg({ ...img, previewImgUrl: imageBase64 })
+        setActionUser(CRUD_ACTIOND.EDIT)
+        // props.authGetAllProduct()
+    }
+
+
+    const handleAddProduct = async () => {
+
+        if (actionUser === CRUD_ACTIOND.CREATE) {
+            // props.addUser(user)
+            props.authAddProduct(product)
+
+        }
+        if (actionUser === CRUD_ACTIOND.EDIT) {
+            // props.editUser(user)
+            await props.editProduct(product)
+        }
+        setProduct({
+            name: '',
+            nameFull: '',
+            image: '',
+            price: '',
+            detail: '',
+            brandId: '',
+            genderId: '',
+            categoryId: '',
+        })
+        setImg({
+            previewImgUrl: '',
+            isOpen: false
+        })
+        setActionUser(CRUD_ACTIOND.CREATE)
+        setTimeout(() => {
+            props.authGetAllProduct()
+        }, 2000);
+
     }
 
     const handleOnChangeImage = async (e) => {
@@ -48,10 +115,35 @@ const ManageProduct = (props) => {
     const handleOpenModalPreview = () => {
         setImg({ ...img, isOpen: !img.isOpen })
     }
-    console.log('produc :', product)
-    console.log('img :', img)
 
+    const handleDeleteProduct = async (id) => {
+        await props.deleteProduct(id)
+        setTimeout(() => {
+            props.authGetAllProduct()
+        }, 2000);
+    }
 
+    const imgabcd = (base64) => {
+        const imageBase64 = new Buffer(base64, 'base64').toString('binary')
+        return imageBase64
+    }
+
+    useEffect(() => {
+        return () => {
+            img && URL.revokeObjectURL(img.previewImgUrl)
+        }
+    }, [img])
+
+    useEffect(() => {
+        // const respone = getAllProductService();
+        // console.log(respone)
+        props.authGetAllProduct()
+        props.fetchBrand()
+
+    }, [])
+
+    // console.log(props.arrProduct)
+    // console.log(img)
     return (
         <div className='ml-2'>
             <div className="hidden sm:block" aria-hidden="true">
@@ -82,6 +174,7 @@ const ManageProduct = (props) => {
                                                 name="first-name"
                                                 id="first-name"
                                                 className="mt-1 block w-full h-8 focus:outline px-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                value={product.name}
                                                 onChange={(e) => setProduct({ ...product, name: e.target.value })}
                                             />
                                         </div>
@@ -95,7 +188,22 @@ const ManageProduct = (props) => {
                                                 name="price"
                                                 id="price"
                                                 className="mt-1 block w-full h-8 focus:outline px-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                value={product.price}
                                                 onChange={(e) => setProduct({ ...product, price: e.target.value })}
+                                            />
+                                        </div>
+
+                                        <div className="col-span-6 sm:col-span-6">
+                                            <label htmlFor="first-name" className="block text-sm font-medium text-gray-700">
+                                                Tên sản phẩm đầy đủ
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="first-name"
+                                                id="first-name"
+                                                className="mt-1 block w-full h-8 focus:outline px-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                value={product.nameFull}
+                                                onChange={(e) => setProduct({ ...product, nameFull: e.target.value })}
                                             />
                                         </div>
 
@@ -107,6 +215,7 @@ const ManageProduct = (props) => {
                                                 id='detail'
                                                 name='detail'
                                                 rows="5"
+                                                value={product.detail}
                                                 onChange={(e) => setProduct({ ...product, detail: e.target.value })}
                                             ></textarea>
 
@@ -121,11 +230,18 @@ const ManageProduct = (props) => {
                                                 name="brand"
                                                 className="mt-1 block w-full  rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm 
                                             focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                                value={product.brandId}
                                                 onChange={(e) => setProduct({ ...product, brandId: e.target.value })}
                                             >
-                                                <option>Nike</option>
-                                                <option>Male</option>
-                                                <option>Other</option>
+                                                {
+                                                    props.arrBrand && props.arrBrand.length > 0 &&
+                                                    props.arrBrand.map((item, index) => {
+                                                        return (
+                                                            <option key={index} value={item.keyMap}>{item.valueVi}</option>
+
+                                                        )
+                                                    })
+                                                }
                                             </select>
                                         </div>
                                         <div className="col-span-6 sm:col-span-3">
@@ -137,19 +253,31 @@ const ManageProduct = (props) => {
                                                 name="gender"
                                                 className="mt-1 block w-full  rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm 
                                             focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                                value={product.genderId}
                                                 onChange={(e) => setProduct({ ...product, genderId: e.target.value })}
                                             >
-                                                <option>Nam</option>
-                                                <option>Nữ</option>
+                                                {
+                                                    props.arrGender && props.arrGender.length > 0 &&
+                                                    props.arrGender.map((item, index) => {
+                                                        return (
+                                                            <option key={index} value={item.keyMap}>
+                                                                {item.valueVi}
+                                                            </option>
+                                                        )
+                                                    })
+                                                }
                                             </select>
                                         </div>
 
                                         <div className='flex flex-col col-span-6'>
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700 mt-2 mb-3">Ảnh sản phẩm</label>
-                                                <span class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ">
-                                                    <label htmlFor="file-upload">
-                                                        Thêm ảnh sản phẩm
+                                                <span className=" rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-700 shadow-sm 
+                                                    hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                                    <label htmlFor="file-upload"
+                                                        className='cursor-pointer p-2'
+                                                    >
+                                                        {actionUser === CRUD_ACTIOND.EDIT ? 'Thay ảnh sản phẩm' : 'Thêm ảnh sản phẩm'}
                                                     </label>
                                                     <input id="file-upload" name="file-upload" type="file" className="sr-only"
                                                         onChange={(e) => handleOnChangeImage(e)} />
@@ -211,9 +339,9 @@ const ManageProduct = (props) => {
                                         type="button"
                                         className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm
                                      hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                        onClick={() => handleCreateProduct()}
+                                        onClick={() => handleAddProduct()}
                                     >
-                                        Save
+                                        {actionUser === CRUD_ACTIOND.EDIT ? 'Lưu thay đổi' : 'Tạo mới'}
                                     </button>
                                 </div>
                             </div>
@@ -222,12 +350,110 @@ const ManageProduct = (props) => {
                 </div>
             </div >
 
+            <div className="flex flex-col pb-10">
+                <div className="overflow-x-auto">
+                    <div className="p-1.5 w-full inline-block align-middle">
+                        <div className="overflow-hidden border rounded-lg">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gray-50">
+                                    <tr>
+                                        <th
+                                            scope="col"
+                                            className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                        >
+                                            ID
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                        >
+                                            Tên sản phẩm
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                        >
+                                            Giá sản phẩm
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
+                                        >
+                                            Hình ảnh
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="px-6 py-3 text-xs font-bold text-right text-gray-500 uppercase "
+                                        >
+                                            Thương hiệu
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="px-6 py-3 text-xs font-bold text-right text-gray-500 uppercase "
+                                        >
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-200">
+                                    {
+                                        props.arrProduct && props.arrProduct.length > 0 &&
+                                        props.arrProduct.map((item, index) => {
+                                            return (
+                                                <tr key={index}>
+                                                    <td className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap">
+                                                        {index}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
+                                                        {item.name}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
+                                                        {item.price}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm text-gray-800  text-left whitespace-nowrap">
+                                                        <div
+                                                            className='h-20 w-20 bg-cover'
+                                                            style={{ backgroundImage: `url(${imgabcd(item.image)})` }}>
+
+                                                        </div>
+                                                        {/* {item.phoneNumber} */}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm text-gray-800  text-right whitespace-nowrap">
+                                                        {item.brandId}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
+                                                        <div className='flex justify-end gap-3'>
+                                                            <div className="text-green-500 hover:text-green-700 cursor-pointer text-xl">
+                                                                <FaEdit
+                                                                    onClick={() => handleEditProduct(item)}
+                                                                />
+                                                            </div>
+                                                            <div className="text-red-500 hover:text-red-700 cursor-pointer text-xl">
+                                                                <FaTrashAlt onClick={() => {
+                                                                    handleDeleteProduct(item.id)
+                                                                }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Modal preview */}
             {
                 img.isOpen === true ?
                     <>
                         <div
-                            className="  flex h-[100vh] w-[100vw] overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+                            className="  flex h-[100vh] w-[99vw] overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
                         >
                             <div className="relative  w-[100%] my-2 mx-2 ">
                                 {/*content*/}
@@ -239,7 +465,7 @@ const ManageProduct = (props) => {
                                         />
                                     </div>
                                     <div className='h-[890px] '>
-                                        <div className=' h-[90%] w-[50%] mx-auto my-[5%] bg-contain bg-no-repeat'
+                                        <div className=' h-[90%] w-[50%] mx-auto  bg-contain bg-no-repeat'
                                             style={{
                                                 backgroundImage: `url(${img.previewImgUrl})`,
                                             }}
@@ -261,13 +487,20 @@ const ManageProduct = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-
+        arrProduct: state.auth.arrProduct,
+        arrBrand: state.auth.arrBrand,
+        arrGender: state.auth.arrGender
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        authAddProduct: (data) => dispatch(authAddProduct(data))
+        authGetAllProduct: () => dispatch(getAllProduct()),
+        fetchBrand: () => dispatch(fetchBrand()),
+        fetchGender: () => dispatch(fetchGender()),
+        editProduct: (data) => dispatch(editProduct(data)),
+        deleteProduct: (id) => dispatch(deleteProduct(id)),
+        authAddProduct: (product) => dispatch(authAddProduct(product))
     };
 };
 

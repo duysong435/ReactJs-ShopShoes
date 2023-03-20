@@ -1,11 +1,8 @@
 import React from 'react'
-import Footer from './Footer'
-import Header from './Header'
 
 const Introduce = () => {
     return (
         <div>
-            <Header />
             <div className='flex-col mx-[22%] mt-8'>
                 <div>
                     Topweb được thành lập với sứ mệnh giúp doanh nghiệp nhỏ và vừa có một công cụ sắc bén để cạnh tranh sòng phẳng với những doanh nghiệp lớn, doanh nghiệp nước ngoài trên môi trường internet. Với kinh nghiệm tự triển khai những dự án kinh doanh online hiệu quả và tiết kiệm chi phí, chúng tôi tự tin sẽ cung cấp cho khách hàng dịch vụ thiết kế web tốt nhất để phục vụ cho việc phát triển công ty trở lên lớn mạnh.
@@ -32,8 +29,6 @@ const Introduce = () => {
                 </div>
                 <div className='text-xl font-bold mt-4'>Trân trọng!</div>
             </div>
-            <Footer />
-
         </div>
     )
 }

@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import { connect } from "react-redux";
 import { FaWindowClose } from "react-icons/fa";
 import { authLogin } from '../../store/actions';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { path } from '../../utils/constant';
 
 const ModalLogin = (props) => {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -71,7 +72,7 @@ const ModalLogin = (props) => {
               <button
                 className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                 type="button"
-                onClick={() => handleShowModal()}
+                onClick={() => navigate(path.HOME)}
               >
                 Đóng
               </button>
@@ -84,7 +85,7 @@ const ModalLogin = (props) => {
               </button>
             </div>
             <div className='text-right mr-6 my-2'>
-              <span>Bạn chưa có tìa khoản<Link to={path.REGISTER} className='text-blue-500 px-1'>Đăng ký?</Link></span>
+              <span>Bạn chưa có tài khoản<Link to={path.REGISTER} className='text-blue-500 px-1'>Đăng ký?</Link></span>
             </div>
           </div>
         </div>

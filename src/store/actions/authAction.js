@@ -1,14 +1,19 @@
 import actionTypes from "./actionTypes";
 import {
     deleteUserService,
+    editUserService,
     getAllUserService,
     handleLoginService,
     handleRegisterService
 } from "../../services/userServices";
 import {
+    deleteProductService,
+    editProductService,
+    getAllProductService,
     handleAddProductService
 } from '../../services/productService'
 import { toast } from 'react-toastify'
+import { getAllCodeService } from "../../services/allCodeService";
 
 
 const getAllUser = () => {
@@ -177,7 +182,7 @@ const authDeleteUser = (id) => {
     return async (dispatch, getState) => {
         try {
             const response = await deleteUserService(id);
-            console.log(response)
+            // console.log(response)
             if (response && response?.errCode === 0) {
                 toast.success('Delete user success!', {
                     position: "bottom-right",
@@ -226,6 +231,253 @@ const authDeleteUser = (id) => {
     }
 }
 
+const getAllProduct = () => {
+    return async (dispatch, getState) => {
+        try {
+            const response = await getAllProductService();
+            // console.log(response)
+            if (response && response?.errCode === 0) {
+                dispatch({
+                    type: actionTypes.GET_ALL_PRODUCT_SUCCESS,
+                    data: response?.response
+                })
+            } else {
+                dispatch({
+                    type: actionTypes.GET_ALL_PRODUCT_FAILDED
+                })
+            }
+        } catch (error) {
+            dispatch({
+                type: actionTypes.GET_ALL_PRODUCT_FAILDED
+            })
+        }
+    }
+}
+
+const fetchGender = () => {
+    return async (dispatch, getState) => {
+        try {
+            const response = await getAllCodeService('GENDER');
+            // console.log(response)
+            if (response && response?.errCode === 0) {
+                dispatch({
+                    type: actionTypes.FETCH_GENDER_SUCCESS,
+                    data: response?.data
+                })
+            } else {
+                dispatch({
+                    type: actionTypes.FETCH_GENDER_FAILDED
+                })
+            }
+        } catch (error) {
+            dispatch({
+
+            })
+        }
+    }
+}
+
+const fetchRole = () => {
+    return async (dispatch, getState) => {
+        try {
+            const response = await getAllCodeService('ROLE');
+            // console.log(response)
+            if (response && response?.errCode === 0) {
+                dispatch({
+                    type: actionTypes.FETCH_ROLE_SUCCESS,
+                    data: response?.data
+                })
+            } else {
+                dispatch({
+                    type: actionTypes.FETCH_ROLE_FAILDED
+                })
+            }
+        } catch (error) {
+            dispatch({
+                type: actionTypes.FETCH_ROLE_FAILDED
+            })
+        }
+    }
+}
+const fetchBrand = () => {
+    return async (dispatch, getState) => {
+        try {
+            const response = await getAllCodeService('BRAND');
+            // console.log(response)
+            if (response && response?.errCode === 0) {
+                dispatch({
+                    type: actionTypes.FETCH_BRAND_SUCCESS,
+                    data: response?.data
+                })
+            } else {
+                dispatch({
+                    type: actionTypes.FETCH_BRAND_FAILDED
+                })
+            }
+        } catch (error) {
+            dispatch({
+                type: actionTypes.FETCH_BRAND_FAILDED
+            })
+        }
+    }
+}
+
+const editUser = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            const response = await editUserService(data)
+            if (response && response.errCode === 0) {
+                toast.success('Edit user success!', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
+                dispatch({
+                    type: actionTypes.EDIT_USER_SUCCESS,
+                })
+            } else {
+                toast.error('Edit user failded!', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
+                dispatch({
+                    type: actionTypes.EDIT_USER_FAILDED
+                })
+            }
+        } catch (error) {
+            toast.error('Edit user failded!', {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            })
+            dispatch({
+                type: actionTypes.EDIT_USER_FAILDED
+            })
+        }
+    }
+}
+
+const editProduct = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            const response = await editProductService(data)
+            console.log('edit product: ', response)
+            if (response && response.errCode === 0) {
+                toast.success('Edit product success!', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
+                dispatch({
+                    type: actionTypes.EDIT_PRODUCT_SUCCESS,
+                })
+            } else {
+                toast.error('Edit product failded!', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
+                dispatch({
+                    type: actionTypes.EDIT_PRODUCT_FAILDED
+                })
+            }
+        } catch (error) {
+            toast.error('Edit product failded!', {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            })
+            dispatch({
+                type: actionTypes.EDIT_PRODUCT_FAILDED
+            })
+        }
+    }
+}
+
+const deleteProduct = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            const response = await deleteProductService(data)
+            console.log('edit product: ', response)
+            if (response && response.errCode === 0) {
+                toast.success('Delete product success!', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
+                dispatch({
+                    type: actionTypes.DELETE_PRODUCT_SUCCESS,
+                })
+            } else {
+                toast.error('Delete product failded!', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
+                dispatch({
+                    type: actionTypes.DELETE_PRODUCT_FAILDED
+                })
+            }
+        } catch (error) {
+            toast.error('Delete product failded!', {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            })
+            dispatch({
+                type: actionTypes.DELETE_PRODUCT_FAILDED
+            })
+        }
+    }
+}
+
+
 export {
     getAllUser,
     authLogin,
@@ -233,5 +485,12 @@ export {
     authRegister,
     authAddProduct,
     gettAllUser,
-    authDeleteUser
+    authDeleteUser,
+    getAllProduct,
+    fetchGender,
+    fetchRole,
+    fetchBrand,
+    editUser,
+    editProduct,
+    deleteProduct
 }

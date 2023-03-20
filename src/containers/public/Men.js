@@ -5,8 +5,8 @@ import Header from './Header'
 const Men = () => {
   return (
     <div>
-      <Header />
-      <Footer />
+      {/* <Header /> */}
+      {/* <Footer /> */}
     </div>
   )
 }

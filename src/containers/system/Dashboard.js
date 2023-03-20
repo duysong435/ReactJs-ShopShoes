@@ -1,34 +1,28 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from "react-redux";
+import {
+    Outlet,
+    useNavigate
+} from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
+import { path } from '../../utils/constant';
 import ManageProduct from './ManageProduct';
 import ManageUser from './ManageUser';
 
 const arrList = ['ManageUser', 'ManageProduct', 'Orders']
 
 const Dashboard = (props) => {
-    const [tab, setTab] = useState('ManageUser')
+    const navigate = useNavigate()
 
-    const handleChangeTab = (data) => {
-        for (let i = 0; i < arrList.length; i++)
-            if (arrList[i] === data) {
-                // alert(data)
-                setTab(data)
-                // console.log(tab)
-            }
-        // alert(data)
-    }
+    useEffect(() => {
+        navigate(path.MANAGER_USER)
+    }, [])
 
-    // console.log("isLoggin: ", props.isLogin)
     return (
         <React.Fragment>
-            <Sidebar
-                onChangeTab={handleChangeTab}
-            />
+            <Sidebar />
             <div className='relative md:ml-64  h-[100vh]'>
-                {
-                    'ManageUser' === tab ? <ManageUser /> : <ManageProduct />
-                }
+                <Outlet />
             </div>
         </React.Fragment>
     )

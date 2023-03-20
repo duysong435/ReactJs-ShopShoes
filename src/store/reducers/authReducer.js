@@ -7,7 +7,10 @@ const initState = {
     errMessage: '',
     errCode: '',
     arrProduct: [],
-    arrUser: []
+    arrUser: [],
+    arrGender: [],
+    arrRole: [],
+    arrBrand: []
 }
 
 const authReducer = (state = initState, action) => {
@@ -68,6 +71,58 @@ const authReducer = (state = initState, action) => {
                 ...state
             }
         case actionTypes.DELETE_USER_FAILDED:
+            return {
+                ...state
+            }
+        case actionTypes.GET_ALL_PRODUCT_SUCCESS:
+            return {
+                ...state,
+                arrProduct: action?.data?.rows
+            }
+        case actionTypes.GET_ALL_PRODUCT_FAILDED:
+            return {
+                ...state
+            }
+        case actionTypes.FETCH_GENDER_SUCCESS:
+            return {
+                ...state,
+                arrGender: action?.data
+            }
+        case actionTypes.FETCH_GENDER_FAILDED:
+            return {
+                ...state
+            }
+        case actionTypes.FETCH_ROLE_SUCCESS:
+            return {
+                ...state,
+                arrRole: action?.data
+            }
+        case actionTypes.FETCH_ROLE_FAILDED:
+            return {
+                ...state
+            }
+        case actionTypes.FETCH_BRAND_SUCCESS:
+            return {
+                ...state,
+                arrBrand: action?.data
+            }
+        case actionTypes.FETCH_BRAND_FAILDED:
+            return {
+                ...state
+            }
+        case actionTypes.EDIT_USER_SUCCESS:
+            return {
+                ...state,
+            }
+        case actionTypes.EDIT_USER_FAILDED:
+            return {
+                ...state
+            }
+        case actionTypes.EDIT_PRODUCT_SUCCESS:
+            return {
+                ...state,
+            }
+        case actionTypes.EDIT_PRODUCT_FAILDED:
             return {
                 ...state
             }

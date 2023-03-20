@@ -1,20 +1,24 @@
-import React from 'react'
-import Header from './Header'
-// import Navigation from './Navigation'
+import React, { useEffect, useLayoutEffect } from 'react'
+import { Buffer } from 'buffer';
+import { useNavigate } from 'react-router-dom';
 import Slider from "react-slick";
 import './Home.scss'
+import { connect } from 'react-redux';
+import { getAllProduct } from '../../store/actions';
+import { formatPrice } from '../../utils/Format';
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import baner from '../../assets/baner11.jpg'
+// import baner from '../../assets/baner11.jpg'
 import iconCar from '../../assets/icon-car.png'
 import iconStar from '../../assets/icon-star.png'
 import circleDollar from '../../assets/circle-dollar-64.png'
 import product from '../../assets/product/product1.jpg'
-import Footer from './Footer';
+import { path } from '../../utils/constant';
 
-const Home = () => {
+const Home = (props) => {
+    const navigate = useNavigate()
     const settings = {
         dots: true,
         infinite: true,
@@ -24,9 +28,21 @@ const Home = () => {
         autoplay: true,
         autoplaySpeed: 5000
     };
+
+    const imgabcd = (base64) => {
+        const imageBase64 = new Buffer(base64, 'base64').toString('binary')
+        return imageBase64
+    }
+
+    useLayoutEffect(() => {
+        props.authGetAllProduct()
+        console.log(props.arrProduct)
+
+    }, [])
+
+    console.log(props.arrProduct)
     return (
         <div className=''>
-            <Header />
             <div className='h-[400px] '>
                 <Slider {...settings} className='h-[400px] cursor-grab active:cursor-grabbing'>
                     <div className='home-baner'
@@ -80,56 +96,31 @@ const Home = () => {
                     </div>
                 </div>
             </div>
-            <div className='h-[500px] '>
-                <div className='mx-[22%] h-full flex flex-wrap justify-evenly bg-slate-400'>
-                    <div className='w-[247px] h-[252px] mb-5 shadow shadow-[#878282]'>
-                        <div className='h-[75%] '>
-                            <img
-                                src={product} alt='as'
-                                className='h-full w-full'
-                            />
-                        </div>
-                        <div className='h-[25%] text-center text-black-text bg-white'>
-                            <span>Nike train speed 4</span><br />
-                            <span className='text-red-price font-semibold'>6,200,000</span>
-                        </div>
-                    </div>
-                    <div className='w-[247px] h-[252px]  mb-5 shadow shadow-[#878282]'>
-                        <div className='h-[75%] '>
-                            <img
-                                src={product} alt='as'
-                                className='h-full w-full'
-                            />
-                        </div>
-                        <div className='h-[25%] text-center text-black-text bg-white'>
-                            <span>Nike train speed 4</span><br />
-                            <span className='text-red-price font-semibold'>6,200,000</span>
-                        </div>
-                    </div>
-                    <div className='w-[247px] h-[252px]  mb-5 shadow shadow-[#878282]'>
-                        <div className='h-[75%] '>
-                            <img
-                                src={product} alt='as'
-                                className='h-full w-full'
-                            />
-                        </div>
-                        <div className='h-[25%] text-center text-black-text bg-white'>
-                            <span>Nike train speed 4</span><br />
-                            <span className='text-red-price font-semibold'>6,200,000</span>
-                        </div>
-                    </div>
-                    <div className='w-[247px] h-[252px]  mb-5 shadow shadow-[#878282]'>
-                        <div className='h-[75%] '>
-                            <img
-                                src={product} alt='as'
-                                className='h-full w-full'
-                            />
-                        </div>
-                        <div className='h-[25%] text-center text-black-text bg-white'>
-                            <span>Nike train speed 4</span><br />
-                            <span className='text-red-price font-semibold'>6,200,000</span>
-                        </div>
-                    </div>
+            <div className='h-[530px] '>
+                <div className='mx-[22%] h-full flex flex-wrap justify-between '>
+                    {
+                        props.arrProduct && props.arrProduct.length > 0 &&
+                        props.arrProduct.map((item, index) => {
+                            return (
+                                <div key={index} className='w-[247px] h-[252px]  shadow shadow-[#878282]'>
+                                    <div className='h-[75%] cursor-pointer'
+                                        onClick={() => navigate(path.DETAIL)}
+                                    >
+                                        <img
+                                            src={`${imgabcd(item.image)}`} alt='as'
+                                            className='h-full w-full '
+                                        />
+                                        {/* <div className='h-full w-full'
+                                            style={{ backgroundImage: `url(${imgabcd(item.image)})` }}></div> */}
+                                    </div>
+                                    <div className='h-[25%] text-center text-black-text bg-white'>
+                                        <span>{item.name}</span><br />
+                                        <span className='text-red-price font-semibold'>{formatPrice(item.price) + 'd'}</span>
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
                 </div>
             </div>
             {/* Chay hanh */}
@@ -196,9 +187,27 @@ const Home = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
         </div >
     )
 }
 
-export default Home
+const mapStateToProps = (state) => {
+    return {
+        arrProduct: state.auth.arrProduct,
+        arrBrand: state.auth.arrBrand,
+        arrGender: state.auth.arrGender
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        authGetAllProduct: () => dispatch(getAllProduct()),
+        // fetchBrand: () => dispatch(fetchBrand()),
+        // fetchGender: () => dispatch(fetchGender()),
+        // editProduct: (data) => dispatch(editProduct(data)),
+        // deleteProduct: (id) => dispatch(deleteProduct(id)),
+        // authAddProduct: (product) => dispatch(authAddProduct(product))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

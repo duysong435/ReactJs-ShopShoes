@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 import {
   FaBars,
@@ -22,20 +22,36 @@ import {
 
 // import NotificationDropdown from "./NotificationDropdown.js";
 import UserDropdown from "./UserDropdown.js";
+import { path } from "../utils/constant.js";
 
+import './Sidebar.scss'
 
+const listManager = [
+  {
+    path: path.MANAGER_USER,
+    name: 'Quản lý người dùng',
+    nameIcon: <BsFillPeopleFill />
+  },
+
+  {
+    path: path.MANAGER_PRODUCT,
+    name: 'Quản lý sản phẩm',
+    nameIcon: <GiConverseShoe />
+  },
+
+  {
+    path: path.MANAGER_ORDER,
+    name: 'Quản lý đơn hàng',
+    nameIcon: <IoIosListBox />
+
+  },
+
+]
 
 
 export default function Sidebar(props) {
   const [collapseShow, setCollapseShow] = useState("hidden");
-  const [activeTab, setActiveTab] = useState('ManageUser')
-
-  const handleChangeTab = (id) => {
-
-    props.onChangeTab(id);
-    setActiveTab(id)
-
-  }
+  
 
   return (
     <>
@@ -106,75 +122,27 @@ export default function Sidebar(props) {
             </form>
             {/* Navigation */}
             <ul className="md:flex-col md:min-w-full flex flex-col list-none">
-              {/* <li className="items-center">
-                <Link
-                  className="text-pink-500 hover:text-pink-600 text-xs uppercase py-3 font-bold flex"
-                  to="/dashboard"
-                >
-                  <FaTv className="opacity-75 mr-2 text-sm" />
-                </Link>
-              </li> */}
-
-              <li className="items-center">
-                <div
-                  className="flex text-blueGray hover:text-red-400 text-xs uppercase py-3 font-bold gap-2 cursor-pointer"
-                  onClick={() => handleChangeTab('ManageUser')}
-                >
-                  <div className="text-xl">
-                    <BsFillPeopleFill />
-                  </div>
-                  <span className={activeTab === 'ManageUser' ? 'text-red-400' : ''}>
-                    Quản lý người dùng
-                  </span>
-                </div>
-              </li>
-
-              <li className="items-center">
-                <div
-                  className="flex text-blueGray hover:text-red-400 text-xs uppercase py-3 font-bold gap-2 cursor-pointer"
-                  onClick={() => handleChangeTab('ManageProduct')}
-                >
-                  <div className="text-xl">
-                    <GiConverseShoe />
-                  </div>
-                  <span className={activeTab === 'ManageProduct' ? 'text-red-400' : ''}>
-                    Quản lý sản phẩm
-                  </span>
-                </div>
-              </li>
-
-              <li className="items-center">
-                <div
-                  className="flex text-blueGray hover:text-red-400 text-xs uppercase py-3 font-bold gap-2 cursor-pointer"
-                >
-                  <div className="text-xl">
-                    <IoIosListBox />
-                  </div>
-                  <span className={activeTab === '' ? 'text-red-400' : ''}>
-                    Quản lý đơn hàng
-                  </span>
-                </div>
-              </li>
-
-              {/* <li className="items-center">
-                <a
-                  className="text-blueGray text-xs uppercase py-3 font-bold block"
-                  href="#pablo"
-                  onClick={e => e.preventDefault()}
-                >
-                  <i className="fas fa-clipboard-list text-blueGray mr-2 text-sm"></i> Register (soon)
-                </a>
-              </li>
-
-              <li className="items-center">
-                <a
-                  className="text-blueGray text-xs uppercase py-3 font-bold block"
-                  href="#pablo"
-                  onClick={e => e.preventDefault()}
-                >
-                  <i className="fas fa-tools text-blueGray mr-2 text-sm"></i> Settings (soon)
-                </a>
-              </li> */}
+              {
+                listManager.map((item, index) => {
+                  return (
+                    <li key={index} className="items-center">
+                      <div
+                        className="flex text-blueGray hover:text-red-400 text-xs uppercase py-3 font-bold gap-2 "
+                      >
+                        <div className="text-xl">
+                          {item.nameIcon}
+                        </div>
+                        <NavLink
+                          className='cursor-pointer'
+                          to={item.path}
+                        >
+                          {item.name}
+                        </NavLink>
+                      </div>
+                    </li>
+                  )
+                })
+              }
             </ul>
             {/* Divider */}
             <hr className="my-4 md:min-w-full" />
@@ -201,16 +169,6 @@ export default function Sidebar(props) {
                   <i className="fab fa-css3-alt mr-2 text-blueGray text-base"></i> Thêm tài khoản
                 </Link>
               </li>
-
-              <li className="inline-flex">
-                <Link
-                  className="text-blueGray hover:text-red-400 text-sm block mb-4 no-underline font-semibold"
-                  to="/"
-                >
-                  <i className="fab fa-vuejs mr-2 text-blueGray text-base"></i> Phân quyền
-                </Link>
-              </li>
-
               <li className="inline-flex">
                 <Link
                   className="text-blueGray hover:text-red-400  text-sm block mb-4 no-underline font-semibold"

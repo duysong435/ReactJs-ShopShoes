@@ -5,8 +5,11 @@ import Header from './Header'
 const Woman = () => {
   return (
     <div>
-      <Header />
-      <Footer />
+      {/* <Header /> */}
+      <div>
+        afssagfadjkfaoifop
+      </div>
+      {/* <Footer /> */}
     </div>
   )
 }

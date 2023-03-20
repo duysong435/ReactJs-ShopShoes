@@ -14,8 +14,23 @@ const handleAddProductService = (data) => {
     )
 }
 
+const getAllProductService = () => {
+    return configAxios.get('/product/get-all-product-limit')
+}
 
+const editProductService = (data) => {
+    return configAxios.put('/product/edit-product', data)
+}
+
+const deleteProductService = (id) => {
+    return configAxios.delete('/product/delete-product', {
+        data: { id }
+    })
+}
 
 export {
-    handleAddProductService
+    handleAddProductService,
+    getAllProductService,
+    editProductService,
+    deleteProductService
 }

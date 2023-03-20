@@ -7,12 +7,22 @@ import {
   Men,
   Woman,
   Introduce,
-  Register
+  Register,
+  Header
 } from './containers/public'
+
+import {
+  ManageUser,
+  ManagerProduct,
+  ManagerOrder
+} from "./containers/system";
 
 import Dashboard from "./containers/system/Dashboard";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import NotFound from "./containers/public/NotFound";
+import Detail from "./containers/public/Detail";
+
 
 function App() {
   return (
@@ -30,14 +40,22 @@ function App() {
         theme="light"
       />
       <Routes>
-        <Route path={path.HOME} element={<Home />} />
+        <Route path={path.HOME} element={<Header />} >
+          <Route index element={<Home />} />
+          <Route path={path.INTRODUCE} element={<Introduce />} />
+          <Route path={path.MEN} element={<Men />} />
+          <Route path={path.WOMAN} element={<Woman />} />
+          <Route path={path.CONTACT} element={<Contact />} />
+          <Route path={path.REGISTER} element={<Register />} />
+          <Route path={path.DETAIL} element={<Detail />} />
+        </Route>
         {/* <Route path={path.LOGIN} element={<Login />} /> */}
-        <Route path={path.INTRODUCE} element={<Introduce />} />
-        <Route path={path.MEN} element={<Men />} />
-        <Route path={path.WOMAN} element={<Woman />} />
-        <Route path={path.CONTACT} element={<Contact />} />
-        <Route path={path.SYSTEM} element={<Dashboard />} />
-        <Route path={path.REGISTER} element={<Register />} />
+        <Route path={path.SYSTEM} element={<Dashboard />} >
+          <Route path={path.MANAGER_USER} element={<ManageUser />} />
+          <Route path={path.MANAGER_PRODUCT} element={<ManagerProduct />} />
+          <Route path={path.MANAGER_ORDER} element={<ManagerOrder />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
 
     </div>

@@ -25,9 +25,14 @@ const deleteUserService = (id) => {
     })
 }
 
+const editUserService = (data) => {
+    return configAxios.put('/user/edit-user',data)
+}
+
 export {
     handleLoginService,
     handleRegisterService,
     getAllUserService,
-    deleteUserService
+    deleteUserService,
+    editUserService
 }

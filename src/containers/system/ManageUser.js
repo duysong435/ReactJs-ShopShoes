@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from "react-redux";
+import { Buffer } from 'buffer';
 // import Sidebar from '../../components/Sidebar';
+import { CRUD_ACTIOND } from '../../utils/constant';
 import {
     authDeleteUser,
     authLogin,
     authRegister,
+    editUser,
+    fetchGender,
+    fetchRole,
     gettAllUser
 } from '../../store/actions';
 
@@ -12,8 +17,13 @@ import {
     FaEdit,
     FaTrashAlt
 } from "react-icons/fa";
-import { deleteUserService, getAllUserService } from '../../services/userServices';
+import { AiOutlineClose } from "react-icons/ai"
+import {
+    deleteUserService,
+    getAllUserService
+} from '../../services/userServices';
 import { toast } from 'react-toastify';
+import CommonUtils from '../../utils/CommonUtils';
 
 const ManageUser = (props) => {
 
@@ -23,16 +33,30 @@ const ManageUser = (props) => {
         firstName: '',
         lastName: '',
         address: '',
-        gender: '',
-        roleId: '',
+        gender: 'M',
+        roleId: 'R2',
         image: '',
         phoneNumber: ''
     })
 
-    const [arrUsers, setArrUsers] = useState([])
+    const [img, setImg] = useState({
+        previewImgUrl: '',
+        isOpen: false
+    })
+
+    const [actionUser, setActionUser] = useState(CRUD_ACTIOND.CREATE)
+
+    // const [arrUsers, setArrUsers] = useState([])
 
     const handleAddUser = () => {
-        props.addUser(user)
+
+        if (actionUser === CRUD_ACTIOND.CREATE) {
+            props.addUser(user)
+        }
+        if (actionUser === CRUD_ACTIOND.EDIT) {
+            props.editUser(user)
+        }
+        setActionUser(CRUD_ACTIOND.CREATE)
     }
 
     const handleDeleteUser = async (id) => {
@@ -53,12 +77,57 @@ const ManageUser = (props) => {
         }
     }
 
+    const handleEditUser = (user) => {
+        console.log(user)
+
+        let imageBase64 = ''
+        if (user.image) {
+            // const imageBuffer = Buffer.from(JSON.stringify(user.image))
+            // imageBase64 = 'data:image/png;base64,' + imageBuffer.toString('base64')
+            // setImage(imageBase64)
+            imageBase64 = new Buffer(user.image, 'base64').toString('binary')
+        }
+        setUser({
+            id: user.id,
+            email: user.email,
+            password: 'HassPassword',
+            firstName: user.firstName,
+            lastName: user.lastName,
+            address: user.address,
+            phoneNumber: user.phoneNumber,
+            gender: user.gender,
+            roleId: user.roleId,
+            image: imageBase64
+
+
+        })
+        setImg({ ...img, previewImgUrl: imageBase64 })
+        setActionUser(CRUD_ACTIOND.EDIT)
+        props.getAllUser()
+    }
+
+    const handleOnChangeImage = async (e) => {
+        let data = e.target.files;
+        let file = data[0];
+        // console.log(data)
+        // console.log(file)
+        if (file) {
+            let base64 = await CommonUtils.getBase64(file)
+            let objectUrl = URL.createObjectURL(file)
+            setUser({ ...user, image: base64 })
+            setImg({ ...img, previewImgUrl: objectUrl })
+        }
+    }
+    const handleOpenModalPreview = () => {
+        setImg({ ...img, isOpen: !img.isOpen })
+    }
 
     useEffect(() => {
         props.getAllUser()
+        props.fetchGender()
+        props.fetchRole()
     }, [])
 
-    console.log(arrUsers)
 
     console.log(user)
     return (
@@ -78,7 +147,7 @@ const ManageUser = (props) => {
                         </div>
                     </div>
                     <div className="mt-5 md:col-span-2 md:mt-0">
-                        <form action="#" method="POST">
+                        <form >
                             <div className="overflow-hidden shadow sm:rounded-md">
                                 <div className="bg-white px-4 py-5 sm:p-6">
                                     <div className="grid grid-cols-6 gap-6">
@@ -94,6 +163,7 @@ const ManageUser = (props) => {
                                             focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                                 value={user.email}
                                                 onChange={(e) => setUser({ ...user, email: e.target.value })}
+                                                disabled={actionUser === CRUD_ACTIOND.EDIT ? true : false}
                                             />
                                         </div>
 
@@ -109,6 +179,7 @@ const ManageUser = (props) => {
                                             focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                                 value={user.password}
                                                 onChange={(e) => setUser({ ...user, password: e.target.value })}
+                                                disabled={actionUser === CRUD_ACTIOND.EDIT ? true : false}
                                             />
                                         </div>
                                         <div className="col-span-6 sm:col-span-3">
@@ -182,9 +253,17 @@ const ManageUser = (props) => {
                                                 value={user.gender}
                                                 onChange={(e) => setUser({ ...user, gender: e.target.value })}
                                             >
-                                                <option>Famale</option>
-                                                <option>Male</option>
-                                                <option>Other</option>
+                                                {
+                                                    props.arrGender && props.arrGender.length > 0 &&
+                                                    props.arrGender.map((item, index) => {
+                                                        return (
+                                                            <option key={index} value={item.keyMap}>
+                                                                {item.valueVi}
+                                                            </option>
+                                                        )
+                                                    })
+                                                }
+
                                             </select>
                                         </div>
                                         <div className="col-span-6 sm:col-span-3">
@@ -199,8 +278,16 @@ const ManageUser = (props) => {
                                                 value={user.roleId}
                                                 onChange={(e) => setUser({ ...user, roleId: e.target.value })}
                                             >
-                                                <option>Admin</option>
-                                                <option>User</option>
+                                                {
+                                                    props.arrRole && props.arrRole.length > 0 &&
+                                                    props.arrRole.map((item, index) => {
+                                                        return (
+                                                            <option key={index} value={item.keyMap}>
+                                                                {item.valueVi}
+                                                            </option>
+                                                        )
+                                                    })
+                                                }
                                             </select>
                                         </div>
 
@@ -213,47 +300,64 @@ const ManageUser = (props) => {
                                                             <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
                                                         </svg>
                                                     </span>
-                                                    <button
-                                                        type="button"
-                                                        className="ml-5 rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-700 shadow-sm 
-                                                    hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                                    >
-                                                        Change
-                                                    </button>
+                                                    <span className="ml-5 rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-700 shadow-sm 
+                                                    hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                                        <label htmlFor="file-upload">
+                                                            Change
+                                                        </label>
+                                                        {/* <input id="file-upload" name="file-upload" type="file" className="sr-only"
+                                                            onChange={(e) => handleOnChangeImage(e)} /> */}
+                                                    </span>
                                                 </div>
                                             </div>
 
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700 mt-2">Cover photo</label>
                                                 <div className="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
-                                                    <div className="space-y-1 text-center">
-                                                        <svg
-                                                            className="mx-auto h-12 w-12 text-gray-400"
-                                                            stroke="currentColor"
-                                                            fill="none"
-                                                            viewBox="0 0 48 48"
-                                                            aria-hidden="true"
-                                                        >
-                                                            <path
-                                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                                                strokeWidth={2}
-                                                                strokeLinecap="round"
-                                                                strokeLinejoin="round"
-                                                            />
-                                                        </svg>
-                                                        <div className="flex text-sm text-gray-600">
-                                                            <label
-                                                                htmlFor="file-upload"
-                                                                className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 
+                                                    {
+                                                        img.previewImgUrl ?
+                                                            <div className='space-y-1 '>
+                                                                <div className='flex'>
+                                                                    <div className='h-48 w-52 bg-cover cursor-pointer'
+                                                                        style={{ backgroundImage: `url(${img.previewImgUrl})` }}
+                                                                        onClick={() => handleOpenModalPreview()}
+                                                                    >
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            :
+                                                            <div className="space-y-1 text-center">
+                                                                <svg
+                                                                    className="mx-auto h-12 w-12 text-gray-400"
+                                                                    stroke="currentColor"
+                                                                    fill="none"
+                                                                    viewBox="0 0 48 48"
+                                                                    aria-hidden="true"
+                                                                >
+                                                                    <path
+                                                                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                                        strokeWidth={2}
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                    />
+                                                                </svg>
+                                                                <div className="flex text-sm text-gray-600">
+                                                                    <label
+                                                                        htmlFor="file-upload"
+                                                                        className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 
                                                             focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500"
-                                                            >
-                                                                <span>Upload div file</span>
-                                                                <input id="file-upload" name="file-upload" type="file" className="sr-only" />
-                                                            </label>
-                                                            <p className="pl-1">or drag and drop</p>
-                                                        </div>
-                                                        <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
-                                                    </div>
+                                                                    >
+                                                                        <span>Upload file</span>
+                                                                        <input id="file-upload" name="file-upload" type="file" className="sr-only"
+                                                                            onChange={(e) => handleOnChangeImage(e)}
+                                                                        />
+                                                                    </label>
+                                                                    <p className="pl-1">or drag and drop</p>
+                                                                </div>
+                                                                <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                                                            </div>
+                                                    }
                                                 </div>
                                             </div>
 
@@ -269,7 +373,7 @@ const ManageUser = (props) => {
 
                                         onClick={() => handleAddUser()}
                                     >
-                                        Save
+                                        {actionUser === CRUD_ACTIOND.EDIT ? 'Lưu thay đổi' : 'Tạo mới'}
                                     </button>
                                 </div>
                             </div>
@@ -352,13 +456,15 @@ const ManageUser = (props) => {
                                                     <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
                                                         <div className='flex justify-end gap-3'>
                                                             <div className="text-green-500 hover:text-green-700 cursor-pointer text-xl">
-                                                                <FaEdit />
+                                                                <FaEdit
+                                                                    onClick={() => handleEditUser(item)}
+                                                                />
                                                             </div>
                                                             <div className="text-red-500 hover:text-red-700 cursor-pointer text-xl">
                                                                 <FaTrashAlt onClick={() => {
                                                                     handleDeleteUser(item.id)
-                                                                }
-                                                                } />
+                                                                }}
+                                                                />
                                                             </div>
                                                         </div>
                                                     </td>
@@ -373,6 +479,38 @@ const ManageUser = (props) => {
                     </div>
                 </div>
             </div>
+            {
+                img.isOpen === true ?
+                    <>
+                        <div
+                            className="  flex h-[100vh] w-[99vw] overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+                        >
+                            <div className="relative  w-[100%] my-2 mx-2 ">
+                                {/*content*/}
+                                <div className="border-0  shadow-lg relative flex flex-col   outline-none focus:outline-none">
+                                    <div className='flex justify-between'>
+                                        <div className=''></div>
+                                        <AiOutlineClose className='text-3xl cursor-pointer'
+                                            onClick={() => handleOpenModalPreview()}
+                                        />
+                                    </div>
+                                    <div className='h-[890px] '>
+                                        <div className=' h-[90%] w-[50%] mx-auto  bg-contain bg-no-repeat'
+                                            style={{
+                                                backgroundImage: `url(${img.previewImgUrl})`,
+                                            }}
+                                        >
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+                    </>
+                    : ''
+            }
         </div >
     )
 }
@@ -380,7 +518,9 @@ const ManageUser = (props) => {
 const mapStateToProps = (state) => {
     return {
         isLogin: state.auth.isLoggedIn,
-        arrUser: state.auth.arrUser
+        arrUser: state.auth.arrUser,
+        arrGender: state.auth.arrGender,
+        arrRole: state.auth.arrRole
     };
 };
 
@@ -389,7 +529,10 @@ const mapDispatchToProps = (dispatch) => {
         authLogin: (email, password) => dispatch(authLogin(email, password)),
         deleteUser: (id) => dispatch(authDeleteUser(id)),
         getAllUser: () => dispatch(gettAllUser()),
-        addUser: (user) => dispatch(authRegister(user))
+        addUser: (user) => dispatch(authRegister(user)),
+        fetchGender: () => dispatch(fetchGender()),
+        fetchRole: () => dispatch(fetchRole()),
+        editUser: (user) => dispatch(editUser(user))
     };
 };
 
