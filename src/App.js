@@ -22,6 +22,7 @@ import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import NotFound from "./containers/public/NotFound";
 import Detail from "./containers/public/Detail";
+import Cart from "./containers/public/Cart";
 
 
 function App() {
@@ -47,7 +48,8 @@ function App() {
           <Route path={path.WOMAN} element={<Woman />} />
           <Route path={path.CONTACT} element={<Contact />} />
           <Route path={path.REGISTER} element={<Register />} />
-          <Route path={path.DETAIL} element={<Detail />} />
+          <Route path={path.DETAILS} element={<Detail />} />
+          <Route path={path.CART} element={<Cart />} />
         </Route>
         {/* <Route path={path.LOGIN} element={<Login />} /> */}
         <Route path={path.SYSTEM} element={<Dashboard />} >

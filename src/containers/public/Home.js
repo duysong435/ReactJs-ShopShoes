@@ -1,6 +1,8 @@
 import React, { useEffect, useLayoutEffect } from 'react'
-import { Buffer } from 'buffer';
-import { useNavigate } from 'react-router-dom';
+import {
+    Link,
+    useNavigate
+} from 'react-router-dom';
 import Slider from "react-slick";
 import './Home.scss'
 import { connect } from 'react-redux';
@@ -16,6 +18,7 @@ import iconStar from '../../assets/icon-star.png'
 import circleDollar from '../../assets/circle-dollar-64.png'
 import product from '../../assets/product/product1.jpg'
 import { path } from '../../utils/constant';
+import { convertImg } from '../../utils/Convert';
 
 const Home = (props) => {
     const navigate = useNavigate()
@@ -28,11 +31,6 @@ const Home = (props) => {
         autoplay: true,
         autoplaySpeed: 5000
     };
-
-    const imgabcd = (base64) => {
-        const imageBase64 = new Buffer(base64, 'base64').toString('binary')
-        return imageBase64
-    }
 
     useLayoutEffect(() => {
         props.authGetAllProduct()
@@ -104,14 +102,15 @@ const Home = (props) => {
                             return (
                                 <div key={index} className='w-[247px] h-[252px]  shadow shadow-[#878282]'>
                                     <div className='h-[75%] cursor-pointer'
-                                        onClick={() => navigate(path.DETAIL)}
+                                        onClick={() => navigate(`${path.DETAIL}${item.id}`)}
+                                    // to={`${path.DETAIL}${item.id}`}
                                     >
                                         <img
-                                            src={`${imgabcd(item.image)}`} alt='as'
+                                            src={`${convertImg(item.image)}`} alt='as'
                                             className='h-full w-full '
                                         />
                                         {/* <div className='h-full w-full'
-                                            style={{ backgroundImage: `url(${imgabcd(item.image)})` }}></div> */}
+                                            style={{ backgroundImage: `url(${convertImg(item.image)})` }}></div> */}
                                     </div>
                                     <div className='h-[25%] text-center text-black-text bg-white'>
                                         <span>{item.name}</span><br />

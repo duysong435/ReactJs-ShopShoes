@@ -10,10 +10,12 @@ import {
     deleteProductService,
     editProductService,
     getAllProductService,
+    getDetailService,
     handleAddProductService
 } from '../../services/productService'
 import { toast } from 'react-toastify'
 import { getAllCodeService } from "../../services/allCodeService";
+import { getAllCartService } from "../../services/cartService";
 
 
 const getAllUser = () => {
@@ -425,6 +427,28 @@ const editProduct = (data) => {
     }
 }
 
+const detailProduct = (id) => {
+    return async (dispatch, getState) => {
+        try {
+            const response = await getDetailService(id)
+            if (response && response.errCode === 0) {
+                dispatch({
+                    type: actionTypes.GET_DETAIL_SUCCESS,
+                    data: response?.data
+                })
+            } else {
+                dispatch({
+                    type: actionTypes.GET_DETAIL_FAILDED
+                })
+            }
+        } catch (error) {
+            dispatch({
+                type: actionTypes.GET_DETAIL_FAILDED
+            })
+        }
+    }
+}
+
 const deleteProduct = (data) => {
     return async (dispatch, getState) => {
         try {
@@ -477,6 +501,24 @@ const deleteProduct = (data) => {
     }
 }
 
+const getAllCart = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            const response = await getAllCartService(data);
+            if (response && response.errCode === 0) {
+                dispatch({
+                    type: actionTypes.GET_ALL_CART_SUCCESS,
+                    data: response?.cart
+                })
+            }
+        } catch (error) {
+            dispatch({
+                type: actionTypes.GET_ALL_CART_FAILDED
+            })
+        }
+    }
+}
+
 
 export {
     getAllUser,
@@ -492,5 +534,7 @@ export {
     fetchBrand,
     editUser,
     editProduct,
-    deleteProduct
+    deleteProduct,
+    detailProduct,
+    getAllCart
 }

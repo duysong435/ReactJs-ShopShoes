@@ -4,13 +4,16 @@ const initState = {
     isLoggedIn: false,
     token: null,
     role: '',
+    idUser: '',
     errMessage: '',
     errCode: '',
     arrProduct: [],
     arrUser: [],
     arrGender: [],
     arrRole: [],
-    arrBrand: []
+    arrBrand: [],
+    detailProduct: [],
+    arrCart: []
 }
 
 const authReducer = (state = initState, action) => {
@@ -22,7 +25,8 @@ const authReducer = (state = initState, action) => {
                 ...state,
                 isLoggedIn: true,
                 token: action?.data?.token,
-                role: action?.data?.role
+                role: action?.data?.role,
+                idUser: action?.data.idUser
             }
         case actionTypes.USER_LOGIN_FAILDED:
             return {
@@ -123,6 +127,24 @@ const authReducer = (state = initState, action) => {
                 ...state,
             }
         case actionTypes.EDIT_PRODUCT_FAILDED:
+            return {
+                ...state
+            }
+        case actionTypes.GET_DETAIL_SUCCESS:
+            return {
+                ...state,
+                detailProduct: action?.data
+            }
+        case actionTypes.GET_DETAIL_FAILDED:
+            return {
+                ...state
+            }
+        case actionTypes.GET_ALL_CART_SUCCESS:
+            return {
+                ...state,
+                arrCart: action?.data
+            }
+        case actionTypes.GET_ALL_CART_FAILDED:
             return {
                 ...state
             }

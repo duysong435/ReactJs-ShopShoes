@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import {
     Link,
     NavLink,
-    Outlet
+    Outlet,
+    useNavigate
 } from 'react-router-dom'
 import { connect } from "react-redux";
 
@@ -16,6 +17,7 @@ import UserDropdown from '../../components/UserDropdown';
 import { path } from '../../utils/constant';
 import Footer from './Footer';
 import logo from '../../assets/logo/logo-header.png'
+import ModalCart from '../../components/ModalCart';
 
 
 const Links = [
@@ -51,8 +53,11 @@ const Links = [
 ]
 
 const Header = (props) => {
+    const navigate = useNavigate()
+
     const [showModal, setShowModal] = useState(false)
     const [showDropdown, setShowDropdown] = useState(false)
+    const [showModalCart, setShowModalCart] = useState(false)
 
     const onShowModal = (data) => {
         setShowModal(data)
@@ -103,7 +108,19 @@ const Header = (props) => {
                             }
 
                             <FaGripLinesVertical size={'20px'} className='opacity-40 mx-2' />
-                            <FaShoppingBag size={'20px'} fontSize={'24px'} />
+                            <div className="relative inline-flex w-fit">
+                                <div
+                                    className="absolute top-0 right-0 bottom-auto left-auto z-10 inline-block translate-x-2/4 -translate-y-1/2 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-indigo-500 py-1 px-1  text-center align-baseline text-[10px] font-bold leading-none text-white">
+                                    0
+                                </div>
+                                <FaShoppingBag size={'20px'} fontSize={'24px'}
+                                    className='cursor-pointer'
+                                    onClick={() => {
+                                        // setShowModalCart(!showModalCart)
+                                        navigate(path.CART)
+                                    }}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -123,7 +140,9 @@ const Header = (props) => {
                 </div>
 
             </div>
+
             {showModal ? <Login onShowModal={onShowModal} /> : null}
+            {/* {showModalCart ? <ModalCart /> : null} */}
             <Outlet />
             <Footer />
         </React.Fragment>

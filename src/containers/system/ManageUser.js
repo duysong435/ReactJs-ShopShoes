@@ -82,9 +82,6 @@ const ManageUser = (props) => {
 
         let imageBase64 = ''
         if (user.image) {
-            // const imageBuffer = Buffer.from(JSON.stringify(user.image))
-            // imageBase64 = 'data:image/png;base64,' + imageBuffer.toString('base64')
-            // setImage(imageBase64)
             imageBase64 = new Buffer(user.image, 'base64').toString('binary')
         }
         setUser({

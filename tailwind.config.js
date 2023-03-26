@@ -9,7 +9,8 @@ module.exports = {
       textColor: {
         'red-price': '#ff0000',
         'black-text': '#3d3d3d',
-        'blueGray': '#878DA6'
+        'blueGray': '#878DA6',
+        'green-text': '#008000'
       }
     },
   },

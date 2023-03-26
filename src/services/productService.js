@@ -28,9 +28,14 @@ const deleteProductService = (id) => {
     })
 }
 
+const getDetailService = (id) => {
+    return configAxios.get(`/product/detail/${id}`)
+}
+
 export {
     handleAddProductService,
     getAllProductService,
     editProductService,
-    deleteProductService
+    deleteProductService,
+    getDetailService
 }
