@@ -15,12 +15,12 @@ import {
 } from '../../services/productService'
 import { toast } from 'react-toastify'
 import { getAllCodeService } from "../../services/allCodeService";
-import { getAllCartService } from "../../services/cartService";
+import { addCartService, getAllCartService, getCountCartService } from "../../services/cartService";
 
 
-const getAllUser = () => {
+// const getAllUser = () => {
 
-}
+// }
 
 const authLogin = (email, password) => {
     return async (dispatch, getState) => {
@@ -28,11 +28,31 @@ const authLogin = (email, password) => {
             const data = await handleLoginService(email, password);
             // console.log(data)
             if (data && data?.data?.errCode === 0) {
+                toast.success('Login success!', {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
                 dispatch({
                     type: actionTypes.USER_LOGIN_SUCCESS,
                     data: data?.data
                 });
             } else {
+                toast.error('Login failed!', {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
                 dispatch({ type: actionTypes.USER_LOGIN_FAILDED });
 
             }
@@ -46,12 +66,32 @@ const authLogin = (email, password) => {
 const authLogout = () => {
     return async (dispatch, getState) => {
         try {
+            toast.success('Logout success!', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            })
             dispatch({
                 type: actionTypes.USER_LOGOUT_SUCCESS
             })
         } catch (error) {
+            toast.error('Logout failed!', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            })
             dispatch({
-                type: actionTypes.U
+                type: actionTypes.USER_LOGIN_FAILDED
             })
             console.log(error)
         }
@@ -156,11 +196,12 @@ const authAddProduct = (data) => {
     }
 }
 
-const gettAllUser = () => {
+const getAllUser = (query) => {
     return async (dispatch, getState) => {
         try {
-            const response = await getAllUserService();
-            // console.log(response)
+            const data = { offset: 0 }
+            const response = await getAllUserService(query);
+            console.log(response)
             if (response && response?.errCode === 0) {
                 dispatch({
                     type: actionTypes.GET_ALL_USER_SUCCESS,
@@ -233,10 +274,10 @@ const authDeleteUser = (id) => {
     }
 }
 
-const getAllProduct = () => {
+const getAllProduct = (query) => {
     return async (dispatch, getState) => {
         try {
-            const response = await getAllProductService();
+            const response = await getAllProductService(query);
             // console.log(response)
             if (response && response?.errCode === 0) {
                 dispatch({
@@ -319,6 +360,72 @@ const fetchBrand = () => {
         } catch (error) {
             dispatch({
                 type: actionTypes.FETCH_BRAND_FAILDED
+            })
+        }
+    }
+}
+
+const fetchSize = () => {
+    return async (dispatch, getState) => {
+        try {
+            const response = await getAllCodeService('SIZE')
+            if (response && response?.errCode === 0) {
+                dispatch({
+                    type: actionTypes.FETCH_SIZE_SUCCESS,
+                    data: response?.data
+                })
+            } else {
+                dispatch({
+                    type: actionTypes.FETCH_SIZE_FAILDED
+                })
+            }
+        } catch (error) {
+            dispatch({
+                type: actionTypes.FETCH_SIZE_FAILDED
+            })
+        }
+    }
+}
+
+const fetchColor = () => {
+    return async (dispatch, getState) => {
+        try {
+            const response = await getAllCodeService('COLOR')
+            if (response && response?.errCode === 0) {
+                dispatch({
+                    type: actionTypes.FETCH_COLOR_SUCCESS,
+                    data: response?.data
+                })
+            } else {
+                dispatch({
+                    type: actionTypes.FETCH_COLOR_FAILDED
+                })
+            }
+        } catch (error) {
+            dispatch({
+                type: actionTypes.FETCH_COLOR_FAILDED
+            })
+        }
+    }
+}
+
+const fetchStatus = () => {
+    return async (dispatch, getState) => {
+        try {
+            const response = await getAllCodeService('STATUS')
+            if (response && response?.errCode === 0) {
+                dispatch({
+                    type: actionTypes.FETCH_STATUS_SUCCESS,
+                    data: response?.data
+                })
+            } else {
+                dispatch({
+                    type: actionTypes.FETCH_STATUS_FAILDED
+                })
+            }
+        } catch (error) {
+            dispatch({
+                type: actionTypes.FETCH_STATUS_FAILDED
             })
         }
     }
@@ -519,22 +626,62 @@ const getAllCart = (data) => {
     }
 }
 
+const getCountCart = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            const response = await getCountCartService(data)
+            if (response && response.errCode === 0) {
+                dispatch({
+                    type: actionTypes.GET_COUT_CART_SUCCESS,
+                    data: response?.response?.count
+                })
+            }
+        } catch (error) {
+            dispatch({
+                type: actionTypes.GET_COUT_CART_FAILDED
+            })
+        }
+    }
+}
+
+const addCart = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            const response = await addCartService(data)
+            console.log(response)
+            if (response && response.errCode === 0) {
+                dispatch({
+                    type: actionTypes.ADD_CART_SUCCESS
+                })
+            }
+        } catch (error) {
+            dispatch({
+                type: actionTypes.ADD_CART_FAILDED
+            })
+        }
+    }
+}
 
 export {
-    getAllUser,
+    // getAllUser,
     authLogin,
     authLogout,
     authRegister,
     authAddProduct,
-    gettAllUser,
+    getAllUser,
     authDeleteUser,
     getAllProduct,
     fetchGender,
     fetchRole,
     fetchBrand,
+    fetchSize,
+    fetchColor,
+    fetchStatus,
     editUser,
     editProduct,
     deleteProduct,
     detailProduct,
-    getAllCart
+    getAllCart,
+    getCountCart,
+    addCart
 }

@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from 'react'
-import { connect } from "react-redux";
+import React, { useEffect } from 'react'
+import { useSelector } from "react-redux";
 import {
     Outlet,
     useNavigate
 } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
 import { path } from '../../utils/constant';
-import ManageProduct from './ManageProduct';
-import ManageUser from './ManageUser';
-
-const arrList = ['ManageUser', 'ManageProduct', 'Orders']
 
 const Dashboard = (props) => {
     const navigate = useNavigate()
+    const { isLoggedIn, role } = useSelector(state => state.auth)
 
     useEffect(() => {
-        navigate(path.MANAGER_USER)
+        if (!isLoggedIn || role !== 'R1') {
+            navigate(path.HOME)
+        } else {
+            navigate(path.MANAGER_USER)
+        }
     }, [])
 
     return (
@@ -28,16 +29,4 @@ const Dashboard = (props) => {
     )
 }
 
-const mapStateToProps = (state) => {
-    return {
-        isLogin: state.auth.isLoggedIn
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default Dashboard;

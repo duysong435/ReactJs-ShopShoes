@@ -61,6 +61,19 @@ const UserDropdown = (props) => {
         }
         style={{ minWidth: "12rem" }}
       >
+        {
+          props.role === 'R1' ?
+            <Link
+              to={path.SYSTEM}
+              className={
+                "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700 hover:text-red-400"
+              }
+            // onClick={e => e.preventDefault()}
+            >
+              Admin
+            </Link>
+            : ''
+        }
         <Link
           to={path.SYSTEM}
           className={
@@ -70,15 +83,7 @@ const UserDropdown = (props) => {
         >
           Thông tin tài khoản
         </Link>
-        {/* <a
-          href="#pablo"
-          className={
-            "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-          }
-          onClick={e => e.preventDefault()}
-        >
 
-        </a> */}
         <Link
           href="#pablo"
           className={
@@ -90,7 +95,7 @@ const UserDropdown = (props) => {
         </Link>
         <div className="h-0 my-2 border border-solid border-blueGray-100" />
         <Link
-          href="#pablo"
+          to={path.HOME}
           className={
             "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700 hover:text-red-400"
           }
@@ -105,7 +110,8 @@ const UserDropdown = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    isLogin: state.auth.isLoggedIn
+    isLogin: state.auth.isLoggedIn,
+    role: state.auth.role
   };
 };
 

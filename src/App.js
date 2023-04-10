@@ -8,7 +8,11 @@ import {
   Woman,
   Introduce,
   Register,
-  Header
+  Header,
+  Cart,
+  CheckOut,
+  Detail,
+  NotFound
 } from './containers/public'
 
 import {
@@ -20,9 +24,6 @@ import {
 import Dashboard from "./containers/system/Dashboard";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import NotFound from "./containers/public/NotFound";
-import Detail from "./containers/public/Detail";
-import Cart from "./containers/public/Cart";
 
 
 function App() {
@@ -50,6 +51,7 @@ function App() {
           <Route path={path.REGISTER} element={<Register />} />
           <Route path={path.DETAILS} element={<Detail />} />
           <Route path={path.CART} element={<Cart />} />
+          <Route path={path.CHECKOUT} element={<CheckOut />} />
         </Route>
         {/* <Route path={path.LOGIN} element={<Login />} /> */}
         <Route path={path.SYSTEM} element={<Dashboard />} >

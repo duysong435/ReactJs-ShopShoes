@@ -6,6 +6,18 @@ const getAllCartService = (data) => {
     })
 }
 
+const getCountCartService = (data) => {
+    return configAxios.post('/cart/get-cout-cart', {
+        id: data
+    })
+}
+
+const addCartService = (data) => {
+    return configAxios.post('/cart/add-cart',data)
+}
+
 export {
-    getAllCartService
+    getAllCartService,
+    getCountCartService,
+    addCartService
 }

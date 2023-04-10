@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { connect } from "react-redux";
 import { FaWindowClose } from "react-icons/fa";
-import { authLogin } from '../../store/actions';
+import { authLogin, getCountCart } from '../../store/actions';
 import { Link, useNavigate } from 'react-router-dom';
 import { path } from '../../utils/constant';
 
@@ -18,7 +18,6 @@ const ModalLogin = (props) => {
     try {
       await props.login(email, password)
       handleShowModal();
-      // console.log(process.env.REACT_APP_BACKEND_URL)
 
     } catch (error) {
       console.log(error)
@@ -79,7 +78,13 @@ const ModalLogin = (props) => {
               <button
                 className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                 type="button"
-                onClick={() => handleLoginModal()}
+                onClick={() => {
+                  handleLoginModal()
+                  navigate(path.HOME)
+                  setTimeout(() => {
+                    props.coutCart(props.idUser)
+                  }, 2000)
+                }}
               >
                 Đăng Nhập
               </button>
@@ -97,13 +102,16 @@ const ModalLogin = (props) => {
 
 const mapStateToProps = (state) => {
   return {
+    idUser: state.auth.idUser,
 
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    login: (email, password) => dispatch(authLogin(email, password))
+    login: (email, password) => dispatch(authLogin(email, password)),
+    coutCart: (data) => dispatch(getCountCart(data))
+
   };
 };
 

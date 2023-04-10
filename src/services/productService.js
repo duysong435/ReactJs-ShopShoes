@@ -14,8 +14,21 @@ const handleAddProductService = (data) => {
     )
 }
 
-const getAllProductService = () => {
-    return configAxios.get('/product/get-all-product-limit')
+const getAllProductService = (query) => {
+    // return configAxios.get('/product/get-all-product-limit')
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await configAxios({
+                method: 'get',
+                url: `/product/get-all-product-limit`,
+                params: query
+            })
+            resolve(response)
+    
+        } catch (error) {
+            reject(error)
+        }
+    })
 }
 
 const editProductService = (data) => {

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
-import { useNavigate } from 'react-router-dom';
+import { connect, useDispatch, useSelector } from 'react-redux'
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { TfiAngleDoubleRight } from "react-icons/tfi";
 import { getAllCart } from '../../store/actions';
@@ -11,22 +11,29 @@ import { path } from '../../utils/constant';
 
 export const Cart = (props) => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const [searchParams] = useSearchParams()
+    const { idUser, isLoggedIn, arrCart } = useSelector(state => state.auth)
 
     const SumPrice = (a, b) => {
         return a * b
     }
 
     useEffect(() => {
-        props.getCart(props.idUser)
+        if (!isLoggedIn) {
+
+        } else {
+            // props.getCart(props.idUser)
+            dispatch(getAllCart(idUser))
+        }
     }, [])
-    console.log(props.arrCart)
     return (
         <div>
             <div className='mx-[18%]'>
                 <div className='flex justify-center items-center text-2xl gap-3 mt-10'>
                     <span>Shopping Cart</span>
                     <TfiAngleDoubleRight />
-                    <span>Checkout</span>
+                    <span>Checkout Details</span>
                     <TfiAngleDoubleRight />
                     <span>Order Complete</span>
                 </div>
@@ -84,7 +91,7 @@ export const Cart = (props) => {
                                         </thead>
                                         <tbody className="divide-y divide-gray-200">
                                             {
-                                                props.arrCart && props.arrCart.map((item, index) => {
+                                                arrCart && arrCart.map((item, index) => {
                                                     return (
                                                         <tr key={index}>
                                                             <td className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap">
@@ -109,8 +116,8 @@ export const Cart = (props) => {
                                                             <td className="px-6 py-4 text-sm text-gray-800  text-right whitespace-nowrap">
                                                                 {item.amount}
                                                             </td>
-                                                            <td className="px-6 py-4 text-sm  text-right whitespace-nowrap">
-                                                                <div className='flex justify-end gap-3'>
+                                                            <td className="px-6 py-4 text-sm  text-center whitespace-nowrap">
+                                                                <div className='flex justify-center gap-3'>
                                                                     {
                                                                         SumPrice(item.productData.price, item.amount)
                                                                     }
@@ -135,7 +142,12 @@ export const Cart = (props) => {
                                 >
                                     Tiếp tục mua hàng
                                 </button>
-                                <button className=' py-2 px-3 bg-black text-white mt-2 w-[200px] uppercase'>
+                                <button className=' py-2 px-3 bg-black text-white mt-2 w-[200px] uppercase'
+                                    onClick={() => {
+                                        props.getCart(props.idUser)
+
+                                    }}
+                                >
                                     Cập nhật giỏ hàng
                                 </button>
                             </div>
@@ -155,7 +167,9 @@ export const Cart = (props) => {
                             <span>1000000</span>
                         </div>
                         <div className='w-full mt-4'>
-                            <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded uppercase">
+                            <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded uppercase"
+                                onClick={() => navigate(path.CHECKOUT)}
+                            >
                                 Thanh toán
                             </button>
                         </div>
@@ -181,17 +195,4 @@ export const Cart = (props) => {
     )
 }
 
-const mapStateToProps = (state) => {
-    return {
-        idUser: state.auth.idUser,
-        arrCart: state.auth.arrCart
-    }
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        getCart: (idUser) => dispatch(getAllCart(idUser))
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Cart)
+export default Cart

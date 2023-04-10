@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Buffer } from 'buffer';
-// import Sidebar from '../../components/Sidebar';
 import { CRUD_ACTIOND } from '../../utils/constant';
 import {
-    authDeleteUser,
-    authLogin,
     authRegister,
     editUser,
     fetchGender,
     fetchRole,
-    gettAllUser
+    getAllUser,
 } from '../../store/actions';
 
 import {
@@ -19,13 +16,17 @@ import {
 } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai"
 import {
-    deleteUserService,
-    getAllUserService
+    deleteUserService
 } from '../../services/userServices';
 import { toast } from 'react-toastify';
 import CommonUtils from '../../utils/CommonUtils';
+import { useSearchParams } from 'react-router-dom';
 
 const ManageUser = (props) => {
+    const dispatch = useDispatch()
+    const [searchParams] = useSearchParams()
+    const { arrUser, arrGender, arrRole, countUser } = useSelector(state => state.auth)
+
 
     const [user, setUser] = useState({
         email: '',
@@ -43,18 +44,17 @@ const ManageUser = (props) => {
         previewImgUrl: '',
         isOpen: false
     })
-
     const [actionUser, setActionUser] = useState(CRUD_ACTIOND.CREATE)
-
-    // const [arrUsers, setArrUsers] = useState([])
+    const [arrPageNumber, setArrPageNumber] = useState([]);
+    const [active, setActive] = useState(0)
 
     const handleAddUser = () => {
 
         if (actionUser === CRUD_ACTIOND.CREATE) {
-            props.addUser(user)
+            dispatch(authRegister(user))
         }
         if (actionUser === CRUD_ACTIOND.EDIT) {
-            props.editUser(user)
+            dispatch(editUser(user))
         }
         setActionUser(CRUD_ACTIOND.CREATE)
     }
@@ -72,14 +72,12 @@ const ManageUser = (props) => {
                 progress: undefined,
                 theme: "light",
             })
-            props.getAllUser()
+            dispatch(getAllUser())
 
         }
     }
 
     const handleEditUser = (user) => {
-        console.log(user)
-
         let imageBase64 = ''
         if (user.image) {
             imageBase64 = new Buffer(user.image, 'base64').toString('binary')
@@ -100,14 +98,12 @@ const ManageUser = (props) => {
         })
         setImg({ ...img, previewImgUrl: imageBase64 })
         setActionUser(CRUD_ACTIOND.EDIT)
-        props.getAllUser()
+        dispatch(getAllUser())
     }
 
     const handleOnChangeImage = async (e) => {
         let data = e.target.files;
         let file = data[0];
-        // console.log(data)
-        // console.log(file)
         if (file) {
             let base64 = await CommonUtils.getBase64(file)
             let objectUrl = URL.createObjectURL(file)
@@ -119,13 +115,34 @@ const ManageUser = (props) => {
         setImg({ ...img, isOpen: !img.isOpen })
     }
 
+    const handlePaginationUser = (value) => {
+        const data = { offset: value }
+        setActive(value)
+        dispatch(getAllUser(data))
+    }
+
+    const pageNumber = () => {
+        let arrCount = []
+        if (!countUser) {
+
+        } else {
+            const a = (countUser - (countUser % 8)) / 8
+            for (let i = 0; i <= a; i++) {
+                arrCount.push(i)
+            }
+            setArrPageNumber(arrCount)
+        }
+    }
+
     useEffect(() => {
-        props.getAllUser()
-        props.fetchGender()
-        props.fetchRole()
+        dispatch(getAllUser())
+        dispatch(fetchGender())
+        dispatch(fetchRole())
     }, [])
 
-
+    useEffect(() => {
+        pageNumber()
+    }, [countUser])
     console.log(user)
     return (
         <div className='ml-2'>
@@ -134,7 +151,7 @@ const ManageUser = (props) => {
                     <div className="border-t border-gray-200" />
                 </div>
             </div>
-
+            {/* Form start */}
             <div className="mt-10 sm:mt-0">
                 <div className="md:grid md:grid-cols-1 md:gap-6">
                     <div className="md:col-span-1">
@@ -251,8 +268,8 @@ const ManageUser = (props) => {
                                                 onChange={(e) => setUser({ ...user, gender: e.target.value })}
                                             >
                                                 {
-                                                    props.arrGender && props.arrGender.length > 0 &&
-                                                    props.arrGender.map((item, index) => {
+                                                    arrGender && arrGender.length > 0 &&
+                                                    arrGender.map((item, index) => {
                                                         return (
                                                             <option key={index} value={item.keyMap}>
                                                                 {item.valueVi}
@@ -276,8 +293,8 @@ const ManageUser = (props) => {
                                                 onChange={(e) => setUser({ ...user, roleId: e.target.value })}
                                             >
                                                 {
-                                                    props.arrRole && props.arrRole.length > 0 &&
-                                                    props.arrRole.map((item, index) => {
+                                                    arrRole && arrRole.length > 0 &&
+                                                    arrRole.map((item, index) => {
                                                         return (
                                                             <option key={index} value={item.keyMap}>
                                                                 {item.valueVi}
@@ -384,8 +401,9 @@ const ManageUser = (props) => {
                     <div className="border-t border-gray-200" />
                 </div>
             </div>
-
-            <div className="flex flex-col pb-10">
+            {/* Form end */}
+            {/* Table start */}
+            <div className="flex flex-col pb-2">
                 <div className="overflow-x-auto">
                     <div className="p-1.5 w-full inline-block align-middle">
                         <div className="overflow-hidden border rounded-lg">
@@ -432,7 +450,7 @@ const ManageUser = (props) => {
                                 </thead>
                                 <tbody className="divide-y divide-gray-200">
                                     {
-                                        props.arrUser && props.arrUser.map((item, index) => {
+                                        arrUser && arrUser.map((item, index) => {
                                             return (
                                                 <tr key={index}>
                                                     <td className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap">
@@ -476,6 +494,61 @@ const ManageUser = (props) => {
                     </div>
                 </div>
             </div>
+            {/* Table end */}
+            {/* Page number start */}
+            <div className="flex justify-center">
+                <nav aria-label="Page navigation example">
+                    <ul className="list-none flex gap-1">
+                        {/* <li>
+                            <button
+                                className="relative block rounded bg-transparent py-1.5 px-3 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-200 bg-neutral-100 "
+
+                            >Previous</button
+                            >
+                        </li> */}
+                        {
+                            arrPageNumber && arrPageNumber.length > 1 &&
+                            arrPageNumber.map((item, index) => {
+                                return (
+                                    <li>
+                                        <button
+                                            className={`relative block rounded bg-transparent py-1.5 px-3 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-200 bg-neutral-400 ${active === item ? 'bg-neutral-300' : ''}`}
+                                            onClick={() => handlePaginationUser(item)}
+                                        >
+                                            {item}
+                                        </button
+                                        >
+                                    </li>
+                                )
+                            })
+                        }
+
+                        {/* <li aria-current="page">
+                            <button
+                                className="relative block rounded bg-transparent py-1.5 px-3 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-200 bg-neutral-100 "
+
+                            >2</button
+                            >
+                        </li>
+                        <li>
+                            <button
+                                className="relative block rounded bg-transparent py-1.5 px-3 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-200 bg-neutral-100 "
+
+                            >3</button
+                            >
+                        </li> */}
+                        {/* <li>
+                            <button
+                                className="relative block rounded bg-transparent py-1.5 px-3 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-200 bg-neutral-100 "
+
+                            >Next</button
+                            >
+                        </li> */}
+                    </ul>
+                </nav>
+            </div>
+            <div className='h-3'></div>
+            {/* Page number end */}
             {
                 img.isOpen === true ?
                     <>
@@ -512,25 +585,4 @@ const ManageUser = (props) => {
     )
 }
 
-const mapStateToProps = (state) => {
-    return {
-        isLogin: state.auth.isLoggedIn,
-        arrUser: state.auth.arrUser,
-        arrGender: state.auth.arrGender,
-        arrRole: state.auth.arrRole
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        authLogin: (email, password) => dispatch(authLogin(email, password)),
-        deleteUser: (id) => dispatch(authDeleteUser(id)),
-        getAllUser: () => dispatch(gettAllUser()),
-        addUser: (user) => dispatch(authRegister(user)),
-        fetchGender: () => dispatch(fetchGender()),
-        fetchRole: () => dispatch(fetchRole()),
-        editUser: (user) => dispatch(editUser(user))
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ManageUser);
+export default ManageUser;

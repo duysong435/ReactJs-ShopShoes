@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 
 import {
     FaEdit,
-    FaRegWindowClose,
     FaTrashAlt
 } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai"
@@ -18,7 +17,7 @@ import {
     getAllProduct
 } from '../../store/actions';
 import { CRUD_ACTIOND } from '../../utils/constant';
-// import { getAllProductService, handleAddProductService } from '../../services/productService';
+import { convertImg } from '../../utils/Convert';
 
 const ManageProduct = (props) => {
     const [product, setProduct] = useState({
@@ -38,15 +37,15 @@ const ManageProduct = (props) => {
     })
 
     const [actionUser, setActionUser] = useState(CRUD_ACTIOND.CREATE)
+    const [arrPageNumber, setArrPageNumber] = useState([]);
+    const [active, setActive] = useState(0)
+
 
     const handleEditProduct = (product) => {
         console.log(product)
 
         let imageBase64 = ''
         if (product.image) {
-            // const imageBuffer = Buffer.from(JSON.stringify(user.image))
-            // imageBase64 = 'data:image/png;base64,' + imageBuffer.toString('base64')
-            // setImage(imageBase64)
             imageBase64 = new Buffer(product.image, 'base64').toString('binary')
         }
         setProduct({
@@ -63,19 +62,16 @@ const ManageProduct = (props) => {
         })
         setImg({ ...img, previewImgUrl: imageBase64 })
         setActionUser(CRUD_ACTIOND.EDIT)
-        // props.authGetAllProduct()
     }
 
 
     const handleAddProduct = async () => {
 
         if (actionUser === CRUD_ACTIOND.CREATE) {
-            // props.addUser(user)
             props.authAddProduct(product)
 
         }
         if (actionUser === CRUD_ACTIOND.EDIT) {
-            // props.editUser(user)
             await props.editProduct(product)
         }
         setProduct({
@@ -84,7 +80,7 @@ const ManageProduct = (props) => {
             image: '',
             price: '',
             detail: '',
-            brandId: '',
+            brandId: 'Nike',
             genderId: '',
             categoryId: '',
         })
@@ -102,8 +98,6 @@ const ManageProduct = (props) => {
     const handleOnChangeImage = async (e) => {
         let data = e.target.files;
         let file = data[0];
-        console.log(data)
-        console.log(file)
         if (file) {
             let base64 = await CommonUtils.getBase64(file)
             let objectUrl = URL.createObjectURL(file)
@@ -123,9 +117,28 @@ const ManageProduct = (props) => {
         }, 2000);
     }
 
-    const imgabcd = (base64) => {
-        const imageBase64 = new Buffer(base64, 'base64').toString('binary')
-        return imageBase64
+    // const imgabcd = (base64) => {
+    //     const imageBase64 = new Buffer(base64, 'base64').toString('binary')
+    //     return imageBase64
+    // }
+
+    const pageNumber = () => {
+        let arrCount = []
+        if (!props.countProduct) {
+
+        } else {
+            const a = (props.countProduct - (props.countProduct % 8)) / 8
+            for (let i = 0; i <= a; i++) {
+                arrCount.push(i)
+            }
+            setArrPageNumber(arrCount)
+        }
+    }
+
+    const handlePaginationUser = (value) => {
+        const data = { offset: value }
+        props.authGetAllProduct(data)
+        setActive(value)
     }
 
     useEffect(() => {
@@ -135,15 +148,19 @@ const ManageProduct = (props) => {
     }, [img])
 
     useEffect(() => {
-        // const respone = getAllProductService();
-        // console.log(respone)
         props.authGetAllProduct()
         props.fetchBrand()
-
+        setTimeout(() => {
+            pageNumber()
+        }, 3000)
     }, [])
 
-    // console.log(props.arrProduct)
-    // console.log(img)
+    useEffect(() => {
+        pageNumber()
+    }, [props.countProduct])
+
+    console.log(props.arrProduct)
+    console.log(props.countProduct)
     return (
         <div className='ml-2'>
             <div className="hidden sm:block" aria-hidden="true">
@@ -413,7 +430,7 @@ const ManageProduct = (props) => {
                                                     <td className="px-6 py-4 text-sm text-gray-800  text-left whitespace-nowrap">
                                                         <div
                                                             className='h-20 w-20 bg-cover'
-                                                            style={{ backgroundImage: `url(${imgabcd(item.image)})` }}>
+                                                            style={{ backgroundImage: `url(${convertImg(item.image)})` }}>
 
                                                         </div>
                                                         {/* {item.phoneNumber} */}
@@ -447,6 +464,31 @@ const ManageProduct = (props) => {
                     </div>
                 </div>
             </div>
+            {/* Page number start */}
+            <div className="flex justify-center">
+                <nav aria-label="Page navigation example">
+                    <ul className="list-none flex gap-1">
+                        {
+                            arrPageNumber && arrPageNumber.length > 1 &&
+                            arrPageNumber.map((item, index) => {
+                                return (
+                                    <li>
+                                        <button
+                                            className={`relative block rounded bg-transparent py-1.5 px-3 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-200 bg-neutral-400 ${active === item ? 'bg-neutral-300' : ''}`}
+                                            onClick={() => handlePaginationUser(item)}
+                                        >
+                                            {item}
+                                        </button
+                                        >
+                                    </li>
+                                )
+                            })
+                        }
+                    </ul>
+                </nav>
+            </div>
+            <div className='h-3'></div>
+            {/* Page number end */}
 
             {/* Modal preview */}
             {
@@ -489,13 +531,14 @@ const mapStateToProps = (state) => {
     return {
         arrProduct: state.auth.arrProduct,
         arrBrand: state.auth.arrBrand,
-        arrGender: state.auth.arrGender
+        arrGender: state.auth.arrGender,
+        countProduct: state.auth.countProduct
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        authGetAllProduct: () => dispatch(getAllProduct()),
+        authGetAllProduct: (data) => dispatch(getAllProduct(data)),
         fetchBrand: () => dispatch(fetchBrand()),
         fetchGender: () => dispatch(fetchGender()),
         editProduct: (data) => dispatch(editProduct(data)),

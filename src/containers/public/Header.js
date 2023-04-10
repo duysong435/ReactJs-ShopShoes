@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Link,
     NavLink,
@@ -18,6 +18,7 @@ import { path } from '../../utils/constant';
 import Footer from './Footer';
 import logo from '../../assets/logo/logo-header.png'
 import ModalCart from '../../components/ModalCart';
+import { getCountCart } from '../../store/actions';
 
 
 const Links = [
@@ -68,6 +69,17 @@ const Header = (props) => {
         setShowDropdown(!showDropdown)
     }
 
+    useEffect(() => {
+        if (!props.isLogin) {
+
+        } else {
+            setTimeout(() => {
+                props.coutCart(props.idUser)
+
+            }, 2000)
+        }
+    }, [])
+
     return (
         <React.Fragment>
             <div className='w-full h-[69px] bg-white'>
@@ -111,7 +123,7 @@ const Header = (props) => {
                             <div className="relative inline-flex w-fit">
                                 <div
                                     className="absolute top-0 right-0 bottom-auto left-auto z-10 inline-block translate-x-2/4 -translate-y-1/2 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-indigo-500 py-1 px-1  text-center align-baseline text-[10px] font-bold leading-none text-white">
-                                    0
+                                    {props.coutCartt ? props.coutCartt : ''}
                                 </div>
                                 <FaShoppingBag size={'20px'} fontSize={'24px'}
                                     className='cursor-pointer'
@@ -151,13 +163,17 @@ const Header = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        isLogin: state.auth.isLoggedIn
+        isLogin: state.auth.isLoggedIn,
+        idUser: state.auth.idUser,
+        coutCartt: state.auth.countCart,
+
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         // authLogin: (email, password) => dispatch(authLogin(email, password))
+        coutCart: (data) => dispatch(getCountCart(data))
     };
 };
 

@@ -15,8 +15,21 @@ const handleRegisterService = ({ email, password, firstName, lastName, phoneNumb
     })
 }
 
-const getAllUserService = () => {
-    return configAxios.get('/user/get-all-user-limit')
+const getAllUserService = (query) => {
+    // return configAxios.get(`/user/get-all-user-limit/`)
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await configAxios({
+                method: 'get',
+                url: `/user/get-all-user-limit`,
+                params: query
+            })
+            resolve(response)
+    
+        } catch (error) {
+            reject(error)
+        }
+    })
 }
 
 const deleteUserService = (id) => {

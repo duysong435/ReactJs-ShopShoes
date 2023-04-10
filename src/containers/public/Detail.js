@@ -1,25 +1,36 @@
 import React, { useEffect, useState } from 'react'
-import { Buffer } from 'buffer';
 import { connect } from 'react-redux'
-import { useParams } from 'react-router-dom';
-import { detailProduct, fetchGender } from '../../store/actions';
+import { useNavigate, useParams } from 'react-router-dom';
+import { addCart, detailProduct, fetchColor, fetchGender, fetchSize } from '../../store/actions';
+import { path } from '../../utils/constant';
+import { convertImg } from '../../utils/Convert';
 
 const Detail = (props) => {
   let { id } = useParams();
+  const navigate = useNavigate()
 
-  const convertImg = (base64) => {
-    let imageBase64 = ''
-    if (base64) {
-      imageBase64 = new Buffer(base64, 'base64').toString('binary')
-    }
-    return imageBase64
+  const [cart, setCart] = useState({
+    userId: props.idUser ? props.idUser : '',
+    productId: id,
+    size: 37,
+    amount: 1
+  })
+
+  const handleAddCart = () => {
+    props.addCart(cart)
   }
+  const handleChange = event => {
+    const value = Math.max(1, Math.min(999, Number(event.target.value)));
+    setCart({ ...cart, amount: value });
+  };
 
   useEffect(() => {
     props.detailProduct(id)
-    props.fetchGender()
+    props.fetchSize()
+    props.fetchColor()
   }, [id])
 
+  console.log(cart)
   return (
     <div>
       <div className='h-[500px] flex justify-center mx-[22%] mt-10'>
@@ -60,8 +71,8 @@ const Detail = (props) => {
                   // onChange={(e) => setProduct({ ...product, genderId: e.target.value })}
                   >
                     {
-                      props.arrGender && props.arrGender.length > 0 &&
-                      props.arrGender.map((item, index) => {
+                      props.arrColor && props.arrColor.length > 0 &&
+                      props.arrColor.map((item, index) => {
                         return (
                           <option key={index} value={item.keyMap}>
                             {item.valueVi}
@@ -84,8 +95,8 @@ const Detail = (props) => {
                   // onChange={(e) => setProduct({ ...product, genderId: e.target.value })}
                   >
                     {
-                      props.arrGender && props.arrGender.length > 0 &&
-                      props.arrGender.map((item, index) => {
+                      props.arrSize && props.arrSize.length > 0 &&
+                      props.arrSize.map((item, index) => {
                         return (
                           <option key={index} value={item.keyMap}>
                             {item.valueVi}
@@ -97,21 +108,48 @@ const Detail = (props) => {
                 </div>
                 <div className='flex gap-10'>
                   <div className='flex mt-4'>
-                    <input
-                      className='w-8 h-10 outline-none border-[1px] bg-[#f7f7f7] rounded-l-2xl cursor-pointer'
-                      type={'button'}
-                      value={'-'} />
+                    <span onClick={() => {
+                      if (cart.amount === 0) {
+                        setCart({ ...cart, amount: 0 })
+                      } else {
+                        setCart({ ...cart, amount: cart.amount - 1 })
+                      }
+                    }}>
+                      <input
+                        className='w-8 h-10 outline-none border-[1px] bg-[#f7f7f7] rounded-l-2xl cursor-pointer'
+                        type={'button'}
+                        value={'-'} />
+                    </span>
                     <input
                       className='w-10 h-10 outline-none bg-[#f7f7f7] border-[1px] text-center'
-                      type={'number'} step='1' max={'9999'} />
-                    <input
-                      className='w-8 h-10 outline-none border-[1px] bg-[#f7f7f7] rounded-r-2xl cursor-pointer'
-                      type={'button'}
-                      value={'+'} />
+                      type={'number'} step={1} min={1} max={999}
+                      value={cart.amount}
+                      onChange={(e) => {
+                        handleChange(e)
+                      }}
+                    />
+                    <span onClick={() => {
+                      if (cart.amount >= 999) {
+                        setCart({ ...cart, amount: 999 })
+                      } else {
+                        setCart({ ...cart, amount: cart.amount + 1 })
+                      }
+                    }}>
+                      <input
+                        className='w-8 h-10 outline-none border-[1px] bg-[#f7f7f7] rounded-r-2xl cursor-pointer'
+                        type={'button'}
+                        value={'+'} />
+                    </span>
                   </div>
                   <div className='mt-4'>
                     <button
                       className=' h-10 bg-[#78abd8] py-2 px-4 rounded-lg'
+                      onClick={() => {
+                        handleAddCart()
+                        setTimeout(() => {
+                          navigate(path.CART)
+                        }, 2000)
+                      }}
                     >
                       Thêm vào giỏ
                     </button>
@@ -146,14 +184,19 @@ const Detail = (props) => {
 const mapStateToProps = (state) => {
   return {
     arrGender: state.auth.arrGender,
-    product: state.auth.detailProduct
+    product: state.auth.detailProduct,
+    idUser: state.auth.idUser,
+    arrSize: state.auth.arrSize,
+    arrColor: state.auth.arrColor
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchGender: () => dispatch(fetchGender()),
-    detailProduct: (id) => dispatch(detailProduct(id))
+    fetchSize: () => dispatch(fetchSize()),
+    fetchColor: () => dispatch(fetchColor()),
+    detailProduct: (id) => dispatch(detailProduct(id)),
+    addCart: (data) => dispatch(addCart(data))
 
   }
 }
