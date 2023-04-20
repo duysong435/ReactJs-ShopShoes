@@ -24,7 +24,7 @@ const getAllProductService = (query) => {
                 params: query
             })
             resolve(response)
-    
+
         } catch (error) {
             reject(error)
         }
@@ -42,7 +42,12 @@ const deleteProductService = (id) => {
 }
 
 const getDetailService = (id) => {
+    console.log('ádsfklhasfkj', id)
     return configAxios.get(`/product/detail/${id}`)
+}
+const getNameService = (id) => {
+    console.log('NOnad', id)
+    return configAxios.get(`/product/product/${id}`)
 }
 
 export {
@@ -50,5 +55,6 @@ export {
     getAllProductService,
     editProductService,
     deleteProductService,
-    getDetailService
+    getDetailService,
+    getNameService
 }

@@ -1,34 +1,54 @@
-import React, { useEffect, useState } from 'react'
-import { connect } from 'react-redux'
+import React, { memo, useEffect, useState } from 'react'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom';
-import { addCart, detailProduct, fetchColor, fetchGender, fetchSize } from '../../store/actions';
+import {
+  detailProducts,
+  fetchColor,
+  fetchSize
+} from '../../store/actions';
 import { path } from '../../utils/constant';
 import { convertImg } from '../../utils/Convert';
+import { addCart } from '../../store/actions/appAction';
+
 
 const Detail = (props) => {
   let { id } = useParams();
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const { detailProduct, arrSize, arrColor } = useSelector(state => state.auth)
+
 
   const [cart, setCart] = useState({
-    userId: props.idUser ? props.idUser : '',
-    productId: id,
-    size: 37,
-    amount: 1
+    product_id: id,
+    size: 35,
+    amount: 1,
   })
 
   const handleAddCart = () => {
-    props.addCart(cart)
+    dispatch(addCart(cart))
   }
+
+  const sumPrice = () => {
+    return detailProduct?.price ? cart.amount * detailProduct.price : 0
+  }
+
   const handleChange = event => {
     const value = Math.max(1, Math.min(999, Number(event.target.value)));
     setCart({ ...cart, amount: value });
   };
 
   useEffect(() => {
-    props.detailProduct(id)
-    props.fetchSize()
-    props.fetchColor()
+    dispatch(detailProducts(id))
+    dispatch(fetchSize())
+    dispatch(fetchColor())
   }, [id])
+
+  useEffect(() => {
+    setCart(prevCart => ({
+      ...prevCart,
+      price: detailProduct?.price || 0,
+    }));
+  }, [detailProduct?.price]);
 
   console.log(cart)
   return (
@@ -37,7 +57,7 @@ const Detail = (props) => {
         <div className=' h-full w-full'>
           <div className='h-full relative'>
             <img
-              src={`${convertImg(props.product.image)}`} alt='as'
+              src={`${convertImg(detailProduct.image)}`} alt='as'
               className='h-full w-full absolute '
             />
           </div>
@@ -48,7 +68,7 @@ const Detail = (props) => {
               <span className='text-3xl font-semibold'>KoBe Xi</span>
             </div>
             <div>
-              <span className='text-red-500 text-3xl font-semibold'>50000 ₫</span>
+              <span className='text-red-500 text-3xl font-semibold'>{detailProduct.price} ₫</span>
             </div>
             <div>
               <p>
@@ -71,8 +91,8 @@ const Detail = (props) => {
                   // onChange={(e) => setProduct({ ...product, genderId: e.target.value })}
                   >
                     {
-                      props.arrColor && props.arrColor.length > 0 &&
-                      props.arrColor.map((item, index) => {
+                      arrColor && arrColor.length > 0 &&
+                      arrColor.map((item, index) => {
                         return (
                           <option key={index} value={item.keyMap}>
                             {item.valueVi}
@@ -91,12 +111,12 @@ const Detail = (props) => {
                     name="gender"
                     className="mt-1 block w-full  rounded-2xl border border-gray-300 bg-white py-2 px-3 shadow-sm 
                                             focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                  // value={}
-                  // onChange={(e) => setProduct({ ...product, genderId: e.target.value })}
+                    // value={}
+                    onChange={(e) => setCart({ ...cart, size: +e.target.value })}
                   >
                     {
-                      props.arrSize && props.arrSize.length > 0 &&
-                      props.arrSize.map((item, index) => {
+                      arrSize && arrSize.length > 0 &&
+                      arrSize.map((item, index) => {
                         return (
                           <option key={index} value={item.keyMap}>
                             {item.valueVi}
@@ -146,9 +166,6 @@ const Detail = (props) => {
                       className=' h-10 bg-[#78abd8] py-2 px-4 rounded-lg'
                       onClick={() => {
                         handleAddCart()
-                        setTimeout(() => {
-                          navigate(path.CART)
-                        }, 2000)
                       }}
                     >
                       Thêm vào giỏ
@@ -181,24 +198,4 @@ const Detail = (props) => {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    arrGender: state.auth.arrGender,
-    product: state.auth.detailProduct,
-    idUser: state.auth.idUser,
-    arrSize: state.auth.arrSize,
-    arrColor: state.auth.arrColor
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    fetchSize: () => dispatch(fetchSize()),
-    fetchColor: () => dispatch(fetchColor()),
-    detailProduct: (id) => dispatch(detailProduct(id)),
-    addCart: (data) => dispatch(addCart(data))
-
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Detail)
+export default Detail

@@ -81,9 +81,9 @@ const ModalLogin = (props) => {
                 onClick={() => {
                   handleLoginModal()
                   navigate(path.HOME)
-                  setTimeout(() => {
-                    props.coutCart(props.idUser)
-                  }, 2000)
+                  // setTimeout(() => {
+                  //   props.coutCart(props.idUser)
+                  // }, 2000)
                 }}
               >
                 Đăng Nhập
@@ -110,7 +110,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     login: (email, password) => dispatch(authLogin(email, password)),
-    coutCart: (data) => dispatch(getCountCart(data))
+    // coutCart: (data) => dispatch(getCountCart(data))
 
   };
 };

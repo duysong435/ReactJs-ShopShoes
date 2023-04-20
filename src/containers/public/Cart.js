@@ -1,22 +1,48 @@
-import React, { useEffect } from 'react'
-import { connect, useDispatch, useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { TfiAngleDoubleRight } from "react-icons/tfi";
-import { getAllCart } from '../../store/actions';
 import { convertImg } from '../../utils/Convert';
 
 import { path } from '../../utils/constant';
+import { getDetailService } from '../../services/productService';
 
 
 export const Cart = (props) => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [searchParams] = useSearchParams()
-    const { idUser, isLoggedIn, arrCart } = useSelector(state => state.auth)
+    const { isLoggedIn, detailProduct } = useSelector(state => state.auth)
+    const { arrCart } = useSelector(state => state.app)
+    const [totalMoney, setTotalMoney] = useState(0)
+
+    const [arrCarts, setArrCarts] = useState([{
+        name: '',
+        size: '',
+        price: '',
+        amount: '',
+        image: ''
+    }])
 
     const SumPrice = (a, b) => {
         return a * b
+    }
+
+    const getCart = async () => {
+        const promises = arrCart.map(cartItem => getDetailService(cartItem.product_id));
+        const cartItems = await Promise.all(promises);
+        const updatedArrCart = cartItems.map((cartItem, index) => {
+            const { name, image, price } = cartItem.data;
+            const { amount, size } = arrCart[index];
+            // setTotalMoney(prev => )
+            // setTotalMoney(totalMoney + total);
+            const total = amount * price
+            return { name, image, size, price, amount, total };
+        });
+        const totalMoney = updatedArrCart.reduce((sum, item) => sum + item.total, 0);
+        setTotalMoney(totalMoney);
+        setArrCarts(updatedArrCart);
     }
 
     useEffect(() => {
@@ -24,9 +50,13 @@ export const Cart = (props) => {
 
         } else {
             // props.getCart(props.idUser)
-            dispatch(getAllCart(idUser))
+            // dispatch(getAllCart(idUser)) 
+            getCart()
         }
     }, [])
+    // console.log(arrCart)
+    // console.log('arrrCart', arrCarts)
+    console.log(totalMoney)
     return (
         <div>
             <div className='mx-[18%]'>
@@ -67,7 +97,7 @@ export const Cart = (props) => {
                                                     scope="col"
                                                     className="px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase "
                                                 >
-                                                    Giá
+                                                    Số lượng
                                                 </th>
                                                 <th
                                                     scope="col"
@@ -79,7 +109,7 @@ export const Cart = (props) => {
                                                     scope="col"
                                                     className="px-6 py-3 text-xs font-bold text-right text-gray-500 uppercase "
                                                 >
-                                                    Số lượng
+                                                    Giá
                                                 </th>
                                                 <th
                                                     scope="col"
@@ -91,35 +121,37 @@ export const Cart = (props) => {
                                         </thead>
                                         <tbody className="divide-y divide-gray-200">
                                             {
-                                                arrCart && arrCart.map((item, index) => {
+                                                arrCarts && arrCarts.length > 0 && arrCarts.map((item, index) => {
                                                     return (
                                                         <tr key={index}>
                                                             <td className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap">
                                                                 {index}
                                                             </td>
                                                             <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
-                                                                {item.productData.name}
+                                                                {item.name}
                                                             </td>
                                                             <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
                                                                 <div
                                                                     className='h-20 w-20 bg-cover'
-                                                                    style={{ backgroundImage: `url(${convertImg(item.productData.image)})` }}>
+                                                                    style={{ backgroundImage: `url(${convertImg(item.image)})` }}
+                                                                >
 
                                                                 </div>
                                                             </td>
                                                             <td className="px-6 py-4 text-sm text-gray-800  text-left whitespace-nowrap">
-                                                                {item.productData.price}
+                                                                {item.amount}
                                                             </td>
                                                             <td className="px-6 py-4 text-sm text-gray-800  text-right whitespace-nowrap">
                                                                 {item.size}
                                                             </td>
                                                             <td className="px-6 py-4 text-sm text-gray-800  text-right whitespace-nowrap">
-                                                                {item.amount}
+                                                                {item.price}
                                                             </td>
                                                             <td className="px-6 py-4 text-sm  text-center whitespace-nowrap">
                                                                 <div className='flex justify-center gap-3'>
                                                                     {
-                                                                        SumPrice(item.productData.price, item.amount)
+                                                                        // SumPrice(item.productData.price, item.amount)
+                                                                        item.total
                                                                     }
                                                                 </div>
                                                             </td>
@@ -144,7 +176,7 @@ export const Cart = (props) => {
                                 </button>
                                 <button className=' py-2 px-3 bg-black text-white mt-2 w-[200px] uppercase'
                                     onClick={() => {
-                                        props.getCart(props.idUser)
+                                        // props.getCart(props.idUser)
 
                                     }}
                                 >
@@ -160,11 +192,11 @@ export const Cart = (props) => {
                         </div>
                         <div className='flex w-[60%] justify-between gap-x-10 border-b-[1px] mt-3 uppercase'>
                             <b>Tổng phụ</b>
-                            <span>100000</span>
+                            <span>{totalMoney}</span>
                         </div>
                         <div className='flex w-[60%] justify-between gap-x-10 border-b-[3px] mt-3 uppercase'>
                             <b>Tổng cộng</b>
-                            <span>1000000</span>
+                            <span>{totalMoney}</span>
                         </div>
                         <div className='w-full mt-4'>
                             <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded uppercase"

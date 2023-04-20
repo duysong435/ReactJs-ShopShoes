@@ -18,8 +18,8 @@ const initState = {
     arrColor: [],
     arrStatus: [],
     detailProduct: [],
-    arrCart: [],
-    countCart: ''
+    // arrCart: [],
+    // countCart: ''
 }
 
 const authReducer = (state = initState, action) => {
@@ -173,25 +173,6 @@ const authReducer = (state = initState, action) => {
                 detailProduct: action?.data
             }
         case actionTypes.GET_DETAIL_FAILDED:
-            return {
-                ...state
-            }
-        case actionTypes.GET_ALL_CART_SUCCESS:
-            return {
-                ...state,
-                arrCart: action?.data
-            }
-        case actionTypes.GET_ALL_CART_FAILDED:
-            return {
-                ...state
-            }
-        case actionTypes.GET_COUT_CART_SUCCESS:
-            console.log(action.data)
-            return {
-                ...state,
-                countCart: action?.data
-            }
-        case actionTypes.GET_COUT_CART_FAILDED:
             return {
                 ...state
             }

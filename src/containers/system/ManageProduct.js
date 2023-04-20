@@ -22,13 +22,11 @@ import { convertImg } from '../../utils/Convert';
 const ManageProduct = (props) => {
     const [product, setProduct] = useState({
         name: '',
-        nameFull: '',
-        image: '',
+        title: '',
         price: '',
-        detail: '',
-        brandId: '',
-        genderId: '',
-        categoryId: '',
+        description: '',
+        brand_id: '',
+        image: '',
     })
 
     const [img, setImg] = useState({
@@ -51,11 +49,10 @@ const ManageProduct = (props) => {
         setProduct({
             id: product.id,
             name: product.name,
-            nameFull: product.nameFull,
+            title: product.title,
             price: product.price,
-            detail: product.detail,
-            brandId: product.brandId,
-            genderId: product.gender,
+            description: product.description,
+            brand_id: product.brand_id,
             image: imageBase64
 
 
@@ -76,13 +73,10 @@ const ManageProduct = (props) => {
         }
         setProduct({
             name: '',
-            nameFull: '',
-            image: '',
+            title: '',
             price: '',
-            detail: '',
-            brandId: 'Nike',
-            genderId: '',
-            categoryId: '',
+            description: '',
+            brand_id: '',
         })
         setImg({
             previewImgUrl: '',
@@ -159,8 +153,7 @@ const ManageProduct = (props) => {
         pageNumber()
     }, [props.countProduct])
 
-    console.log(props.arrProduct)
-    console.log(props.countProduct)
+    console.log(product)
     return (
         <div className='ml-2'>
             <div className="hidden sm:block" aria-hidden="true">
@@ -212,15 +205,15 @@ const ManageProduct = (props) => {
 
                                         <div className="col-span-6 sm:col-span-6">
                                             <label htmlFor="first-name" className="block text-sm font-medium text-gray-700">
-                                                Tên sản phẩm đầy đủ
+                                                Tiêu đề sản phẩm
                                             </label>
                                             <input
                                                 type="text"
                                                 name="first-name"
                                                 id="first-name"
                                                 className="mt-1 block w-full h-8 focus:outline px-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                                value={product.nameFull}
-                                                onChange={(e) => setProduct({ ...product, nameFull: e.target.value })}
+                                                value={product.title}
+                                                onChange={(e) => setProduct({ ...product, title: e.target.value })}
                                             />
                                         </div>
 
@@ -232,8 +225,8 @@ const ManageProduct = (props) => {
                                                 id='detail'
                                                 name='detail'
                                                 rows="5"
-                                                value={product.detail}
-                                                onChange={(e) => setProduct({ ...product, detail: e.target.value })}
+                                                value={product.description}
+                                                onChange={(e) => setProduct({ ...product, description: e.target.value })}
                                             ></textarea>
 
                                         </div>
@@ -247,8 +240,8 @@ const ManageProduct = (props) => {
                                                 name="brand"
                                                 className="mt-1 block w-full  rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm 
                                             focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                                                value={product.brandId}
-                                                onChange={(e) => setProduct({ ...product, brandId: e.target.value })}
+                                                value={product.brand_id}
+                                                onChange={(e) => setProduct({ ...product, brand_id: e.target.value })}
                                             >
                                                 {
                                                     props.arrBrand && props.arrBrand.length > 0 &&
@@ -261,7 +254,7 @@ const ManageProduct = (props) => {
                                                 }
                                             </select>
                                         </div>
-                                        <div className="col-span-6 sm:col-span-3">
+                                        {/* <div className="col-span-6 sm:col-span-3">
                                             <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
                                                 Sản phẩm dành cho
                                             </label>
@@ -284,7 +277,7 @@ const ManageProduct = (props) => {
                                                     })
                                                 }
                                             </select>
-                                        </div>
+                                        </div> */}
 
                                         <div className='flex flex-col col-span-6'>
                                             <div>
@@ -436,7 +429,7 @@ const ManageProduct = (props) => {
                                                         {/* {item.phoneNumber} */}
                                                     </td>
                                                     <td className="px-6 py-4 text-sm text-gray-800  text-right whitespace-nowrap">
-                                                        {item.brandId}
+                                                        {item.brand_id}
                                                     </td>
                                                     <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
                                                         <div className='flex justify-end gap-3'>

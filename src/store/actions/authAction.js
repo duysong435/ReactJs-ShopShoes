@@ -15,7 +15,6 @@ import {
 } from '../../services/productService'
 import { toast } from 'react-toastify'
 import { getAllCodeService } from "../../services/allCodeService";
-import { addCartService, getAllCartService, getCountCartService } from "../../services/cartService";
 
 
 // const getAllUser = () => {
@@ -301,7 +300,7 @@ const fetchGender = () => {
     return async (dispatch, getState) => {
         try {
             const response = await getAllCodeService('GENDER');
-            // console.log(response)
+            console.log(response)
             if (response && response?.errCode === 0) {
                 dispatch({
                     type: actionTypes.FETCH_GENDER_SUCCESS,
@@ -534,10 +533,11 @@ const editProduct = (data) => {
     }
 }
 
-const detailProduct = (id) => {
+const detailProducts = (id) => {
     return async (dispatch, getState) => {
         try {
             const response = await getDetailService(id)
+            // console.log(response)
             if (response && response.errCode === 0) {
                 dispatch({
                     type: actionTypes.GET_DETAIL_SUCCESS,
@@ -608,59 +608,6 @@ const deleteProduct = (data) => {
     }
 }
 
-const getAllCart = (data) => {
-    return async (dispatch, getState) => {
-        try {
-            const response = await getAllCartService(data);
-            if (response && response.errCode === 0) {
-                dispatch({
-                    type: actionTypes.GET_ALL_CART_SUCCESS,
-                    data: response?.cart
-                })
-            }
-        } catch (error) {
-            dispatch({
-                type: actionTypes.GET_ALL_CART_FAILDED
-            })
-        }
-    }
-}
-
-const getCountCart = (data) => {
-    return async (dispatch, getState) => {
-        try {
-            const response = await getCountCartService(data)
-            if (response && response.errCode === 0) {
-                dispatch({
-                    type: actionTypes.GET_COUT_CART_SUCCESS,
-                    data: response?.response?.count
-                })
-            }
-        } catch (error) {
-            dispatch({
-                type: actionTypes.GET_COUT_CART_FAILDED
-            })
-        }
-    }
-}
-
-const addCart = (data) => {
-    return async (dispatch, getState) => {
-        try {
-            const response = await addCartService(data)
-            console.log(response)
-            if (response && response.errCode === 0) {
-                dispatch({
-                    type: actionTypes.ADD_CART_SUCCESS
-                })
-            }
-        } catch (error) {
-            dispatch({
-                type: actionTypes.ADD_CART_FAILDED
-            })
-        }
-    }
-}
 
 export {
     // getAllUser,
@@ -680,8 +627,5 @@ export {
     editUser,
     editProduct,
     deleteProduct,
-    detailProduct,
-    getAllCart,
-    getCountCart,
-    addCart
+    detailProducts
 }

@@ -22,3 +22,8 @@ export const CRUD_ACTIOND = {
     EDIT: 'EDIT',
     DELETE: 'DELETE'
 }
+
+export const payment = {
+    PAYPAL: 'PAYPAL',
+    CASH: 'CASH'
+}

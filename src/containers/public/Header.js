@@ -74,7 +74,7 @@ const Header = (props) => {
 
         } else {
             setTimeout(() => {
-                props.coutCart(props.idUser)
+                // props.coutCart(props.idUser)
 
             }, 2000)
         }
@@ -123,7 +123,7 @@ const Header = (props) => {
                             <div className="relative inline-flex w-fit">
                                 <div
                                     className="absolute top-0 right-0 bottom-auto left-auto z-10 inline-block translate-x-2/4 -translate-y-1/2 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-indigo-500 py-1 px-1  text-center align-baseline text-[10px] font-bold leading-none text-white">
-                                    {props.coutCartt ? props.coutCartt : ''}
+                                    {/* {props.coutCartt ? props.coutCartt : ''} */}
                                 </div>
                                 <FaShoppingBag size={'20px'} fontSize={'24px'}
                                     className='cursor-pointer'
@@ -165,7 +165,7 @@ const mapStateToProps = (state) => {
     return {
         isLogin: state.auth.isLoggedIn,
         idUser: state.auth.idUser,
-        coutCartt: state.auth.countCart,
+        // coutCartt: state.auth.countCart,
 
     };
 };
@@ -173,7 +173,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         // authLogin: (email, password) => dispatch(authLogin(email, password))
-        coutCart: (data) => dispatch(getCountCart(data))
+        // coutCart: (data) => dispatch(getCountCart(data))
     };
 };
 
