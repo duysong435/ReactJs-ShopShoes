@@ -4,7 +4,7 @@ import { PayPalButton } from "react-paypal-button-v2";
 
 import { TfiAngleDoubleRight } from "react-icons/tfi";
 import { FaRegMoneyBillAlt } from 'react-icons/fa'
-import { getAllCart } from '../../store/actions';
+import { clearCart, getAllCart } from '../../store/actions';
 
 import { path, payment } from '../../utils/constant';
 import paypal from '../../assets/icon/paypal.png'
@@ -20,14 +20,14 @@ export const CheckOut = (props) => {
     const { idUser } = useSelector(state => state.auth)
     const { arrCart } = useSelector(state => state.app)
 
-    const [order, setOrder] = useState({
-        user_id: '',
-        payment_method: '',
-        status: '',
-        total_moeny: '',
-        is_paid: '',
-        paidAt: ''
-    })
+    // const [order, setOrder] = useState({
+    //     user_id: '',
+    //     payment_method: '',
+    //     status: '',
+    //     total_moeny: '',
+    //     is_paid: '',
+    //     paidAt: ''
+    // })
     const [totalMoney, setTotalMoney] = useState(0)
     const [arrCarts, setArrCarts] = useState([{
         name: '',
@@ -64,14 +64,40 @@ export const CheckOut = (props) => {
             paidAt: details.update_time
         })
         const order_id = res.order_id
-        arrCart.map(cartItem => createOrderDetailService({
+        arrCart.map((cartItem) => createOrderDetailService({
             order_id: order_id,
             product_id: cartItem.product_id,
             size: cartItem.size,
             amount: cartItem.amount,
             price: cartItem.price,
         }));
-        
+        dispatch(clearCart())
+        setTimeout(() => {
+            navigate(path.ORDERCOMPLETE, { state: { order_id: order_id } });
+        }, 2000);
+    }
+
+    const handlePayment = async () => {
+        const res = await createOrder({
+            user_id: idUser,
+            payment_method: payment.CASH,
+            status: 'S1',
+            total_money: totalMoney,
+            is_paid: false,
+            paidAt: null
+        })
+        const order_id = res.order_id
+        arrCart.map((cartItem) => createOrderDetailService({
+            order_id: order_id,
+            product_id: cartItem.product_id,
+            size: cartItem.size,
+            amount: cartItem.amount,
+            price: cartItem.price,
+        }));
+        dispatch(clearCart())
+        setTimeout(() => {
+            navigate(path.ORDERCOMPLETE, { state: { order_id: order_id } });
+        }, 2000);
     }
 
     const getCart = async () => {
@@ -106,7 +132,7 @@ export const CheckOut = (props) => {
         }
     }, [])
     // console.log(arrCarts)
-    // console.log(arrCart)
+    console.log('arrCart', arrCart)
     return (
         <div>
             <div className='mx-[18%]'>
@@ -303,6 +329,7 @@ export const CheckOut = (props) => {
                                         type="button"
                                         className="inline-flex w-[70%] justify-center rounded-md border border-transparent bg-[#ffc439] py-2 px-4 text-sm font-medium text-white shadow-sm
                                      hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                        onClick={() => handlePayment()}
                                     >
                                         Đặt hàng
                                     </button>

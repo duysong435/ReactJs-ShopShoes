@@ -25,6 +25,16 @@ const appReducer = (state = initState, action) => {
                 return state;
             } else {
                 const updatedArrCart = [...state.arrCart, action.data];
+                toast.success('Đã thêm vào giỏ hàng!', {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
                 return {
                     ...state,
                     arrCart: updatedArrCart
@@ -33,6 +43,11 @@ const appReducer = (state = initState, action) => {
         case actionTypes.ADD_PRODUCT_FAILDED:
             return {
                 ...state,
+            }
+        case actionTypes.CLEAR_CART_SUCCESS:
+            return {
+                ...state,
+                arrCart: []
             }
         default:
             return state;

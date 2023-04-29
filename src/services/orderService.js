@@ -12,8 +12,8 @@ const createOrder = ({ user_id, payment_method, status, total_money, is_paid, pa
 }
 
 const createOrderDetailService = ({ order_id, product_id, size, amount, price }) => {
-    return configAxios.post('/order/create-order-detail', {
-        order_id,
+    return configAxios.post(`/order/create-order-detail`, {
+        order_id: order_id,
         product_id,
         size,
         amount,
@@ -21,7 +21,67 @@ const createOrderDetailService = ({ order_id, product_id, size, amount, price })
     })
 }
 
+const getOrderService = (query) => {
+    // return configAxios.get(`/user/get-all-user-limit/`)
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await configAxios({
+                method: 'get',
+                url: `/order/get-list-order`,
+                params: query
+            })
+            resolve(response)
+
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+const getOrderDetailService = (query) => {
+    // return configAxios.get(`/user/get-all-user-limit/`)
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await configAxios({
+                method: 'get',
+                url: `/order/get-order-detail`,
+                params: query
+            })
+            resolve(response)
+
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+const deleteOrderService = (id) => {
+    return configAxios.delete('/order/delete-order', {
+        data: { id }
+    })
+}
+
+const getOutCheckService = (query) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await configAxios({
+                method: 'get',
+                url: `/order/get-out-check`,
+                params: query
+            })
+            resolve(response)
+
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 export {
     createOrder,
-    createOrderDetailService
+    createOrderDetailService,
+    getOrderService,
+    getOrderDetailService,
+    deleteOrderService,
+    getOutCheckService
 }

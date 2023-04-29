@@ -12,7 +12,9 @@ import {
   Cart,
   CheckOut,
   Detail,
-  NotFound
+  NotFound,
+  ListOrder,
+  OrderComplete
 } from './containers/public'
 
 import {
@@ -52,6 +54,8 @@ function App() {
           <Route path={path.DETAILS} element={<Detail />} />
           <Route path={path.CART} element={<Cart />} />
           <Route path={path.CHECKOUT} element={<CheckOut />} />
+          <Route path={path.LISTORDER} element={<ListOrder />} />
+          <Route path={path.ORDERCOMPLETE} element={<OrderComplete />} />
         </Route>
         {/* <Route path={path.LOGIN} element={<Login />} /> */}
         <Route path={path.SYSTEM} element={<Dashboard />} >

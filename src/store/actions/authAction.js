@@ -15,6 +15,7 @@ import {
 } from '../../services/productService'
 import { toast } from 'react-toastify'
 import { getAllCodeService } from "../../services/allCodeService";
+import { getOrderService } from "../../services/orderService";
 
 
 // const getAllUser = () => {
@@ -198,7 +199,6 @@ const authAddProduct = (data) => {
 const getAllUser = (query) => {
     return async (dispatch, getState) => {
         try {
-            const data = { offset: 0 }
             const response = await getAllUserService(query);
             console.log(response)
             if (response && response?.errCode === 0) {
@@ -485,7 +485,7 @@ const editProduct = (data) => {
     return async (dispatch, getState) => {
         try {
             const response = await editProductService(data)
-            console.log('edit product: ', response)
+            // console.log('edit product: ', response)
             if (response && response.errCode === 0) {
                 toast.success('Edit product success!', {
                     position: "bottom-right",
@@ -560,7 +560,7 @@ const deleteProduct = (data) => {
     return async (dispatch, getState) => {
         try {
             const response = await deleteProductService(data)
-            console.log('edit product: ', response)
+            // console.log('edit product: ', response)
             if (response && response.errCode === 0) {
                 toast.success('Delete product success!', {
                     position: "bottom-right",
@@ -608,6 +608,28 @@ const deleteProduct = (data) => {
     }
 }
 
+const getOrder = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            const response = await getOrderService(data)
+            if (response && response.errCode === 0) {
+                dispatch({
+                    type: actionTypes.GET_LIST_ORDER_SUCCESS,
+                    data: response?.response
+                })
+            } else {
+                dispatch({
+                    type: actionTypes.GET_LIST_ORDER_FAILDED
+                })
+            }
+        } catch (error) {
+            dispatch({
+                type: actionTypes.GET_LIST_ORDER_FAILDED
+            })
+        }
+    }
+}
+
 
 export {
     // getAllUser,
@@ -627,5 +649,6 @@ export {
     editUser,
     editProduct,
     deleteProduct,
-    detailProducts
+    detailProducts,
+    getOrder
 }

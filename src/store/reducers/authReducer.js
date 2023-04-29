@@ -18,6 +18,7 @@ const initState = {
     arrColor: [],
     arrStatus: [],
     detailProduct: [],
+    arrOrder: []
     // arrCart: [],
     // countCart: ''
 }
@@ -173,6 +174,16 @@ const authReducer = (state = initState, action) => {
                 detailProduct: action?.data
             }
         case actionTypes.GET_DETAIL_FAILDED:
+            return {
+                ...state
+            }
+        case actionTypes.GET_LIST_ORDER_SUCCESS:
+            return {
+                ...state,
+                arrOrder: action?.data?.rows,
+                // countProduct: action?.data?.count
+            }
+        case actionTypes.GET_LIST_ORDER_FAILDED:
             return {
                 ...state
             }

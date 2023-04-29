@@ -9,7 +9,9 @@ export const path = {
     DETAILS: 'detail/:id',
     DETAIL: 'detail/',
     CART: '/cart',
+    LISTORDER: '/list-order',
     CHECKOUT: '/checkout',
+    ORDERCOMPLETE: '/order-complete',
     SYSTEM: '/system',
     MANAGER_USER: 'manager-user',
     MANAGER_PRODUCT: 'manager-product',
@@ -26,4 +28,9 @@ export const CRUD_ACTIOND = {
 export const payment = {
     PAYPAL: 'PAYPAL',
     CASH: 'CASH'
+}
+
+export const isPaid = {
+    PAID: 'Đã thanh toán',
+    UNPAID: 'Chưa thanh toán'
 }

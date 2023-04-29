@@ -38,7 +38,7 @@ const Footer = () => {
                                 - Email: topweb.com.vn@gmail.com<br />
                             </li>
                             <li>
-                                - Địa chỉ: Phường hòa Quỹ - Ngũ Hành Sơn - TP Đà Nẵng<br />
+                                - Địa chỉ: 235 Hoàng Quốc Việt - Cầu Giấy - TP Hà Nội<br />
                             </li>
                         </ul>
                         <div className='flex felx-co gap-1'>

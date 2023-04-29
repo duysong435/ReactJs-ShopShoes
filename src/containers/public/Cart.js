@@ -56,7 +56,7 @@ export const Cart = (props) => {
     }, [])
     // console.log(arrCart)
     // console.log('arrrCart', arrCarts)
-    console.log(totalMoney)
+    // console.log(totalMoney)
     return (
         <div>
             <div className='mx-[18%]'>

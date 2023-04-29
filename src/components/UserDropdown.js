@@ -15,12 +15,14 @@ const UserDropdown = (props) => {
   const [dropdownPopoverShow, setDropdownPopoverShow] = React.useState(false);
   const btnDropdownRef = React.createRef();
   const popoverDropdownRef = React.createRef();
+
   const openDropdownPopover = () => {
     createPopper(btnDropdownRef.current, popoverDropdownRef.current, {
       placement: "bottom-end"
     });
     setDropdownPopoverShow(true);
   };
+
   const closeDropdownPopover = () => {
     setDropdownPopoverShow(false);
   };
@@ -68,7 +70,6 @@ const UserDropdown = (props) => {
               className={
                 "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700 hover:text-red-400"
               }
-            // onClick={e => e.preventDefault()}
             >
               Admin
             </Link>
@@ -79,9 +80,17 @@ const UserDropdown = (props) => {
           className={
             "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700 hover:text-red-400"
           }
-        // onClick={e => e.preventDefault()}
         >
           Thông tin tài khoản
+        </Link>
+        <Link
+          to={path.LISTORDER}
+          className={"text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700 hover:text-red-400"}
+          onClick={() => {
+            dropdownPopoverShow ? closeDropdownPopover() : openDropdownPopover();
+          }}
+        >
+          Đơn hàng đã mua
         </Link>
 
         <Link
@@ -89,7 +98,9 @@ const UserDropdown = (props) => {
           className={
             "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700 hover:text-red-400"
           }
-          onClick={e => e.preventDefault()}
+          onClick={() => {
+            dropdownPopoverShow ? closeDropdownPopover() : openDropdownPopover();
+          }}
         >
           Đổi mật khẩu
         </Link>
@@ -99,7 +110,11 @@ const UserDropdown = (props) => {
           className={
             "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700 hover:text-red-400"
           }
-          onClick={() => handleLogout()}
+          onClick={() => {
+            handleLogout()
+            dropdownPopoverShow ? closeDropdownPopover() : openDropdownPopover();
+          }
+          }
         >
           Đăng xuất
         </Link>

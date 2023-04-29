@@ -150,6 +150,13 @@ const ManageProduct = (props) => {
     }, [])
 
     useEffect(() => {
+        setProduct(prevCart => ({
+            ...prevCart,
+            brand_id: props.arrBrand.length > 0 ? props.arrBrand[0].keyMap : '',
+        }));
+    }, []);
+
+    useEffect(() => {
         pageNumber()
     }, [props.countProduct])
 

@@ -17,6 +17,19 @@ const addCart = (data) => {
     }
 }
 
+const clearCart = () => {
+    return async (dispatch,getState) => {
+        try {
+            dispatch({
+                type: actionTypes.CLEAR_CART_SUCCESS
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+}
+
 export {
-    addCart
+    addCart,
+    clearCart
 }
