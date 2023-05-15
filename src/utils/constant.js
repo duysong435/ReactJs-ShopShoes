@@ -16,6 +16,10 @@ export const path = {
     MANAGER_USER: 'manager-user',
     MANAGER_PRODUCT: 'manager-product',
     MANAGER_ORDER: 'manager-order',
+    DETAIL_ORDER: ':id',
+    THOITRANGNAM: 'thoi-trang-nam',
+    THOITRANGNU: 'thoi-trang-nu',
+
 
 }
 

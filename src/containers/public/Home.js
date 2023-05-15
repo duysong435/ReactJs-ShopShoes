@@ -114,7 +114,7 @@ const Home = (props) => {
                                     </div>
                                     <div className='h-[25%] text-center text-black-text bg-white'>
                                         <span>{item.name}</span><br />
-                                        <span className='text-red-price font-semibold'>{formatPrice(item.price) + 'd'}</span>
+                                        <span className='text-red-price font-semibold'>{formatPrice(item.price) + '₫'}</span>
                                     </div>
                                 </div>
                             )
@@ -128,62 +128,38 @@ const Home = (props) => {
                     <div className='w-full pt-3'>
                         <div className='border-2 border-black opacity-30'></div>
                     </div>
-                    <span className='w-full text-center uppercase text-xl font-medium'>Sản phẩm bán chạy tuần qua</span>
+                    <span className='w-full text-center uppercase text-xl font-medium'>Sản phẩm mới</span>
                     <div className='w-full pt-3'>
                         <div className='border-2 border-black opacity-30'></div>
                     </div>
                 </div>
             </div>
-            <div className='h-[500px] '>
-                <div className='mx-[22%] h-full flex flex-wrap justify-evenly bg-slate-400'>
-                    <div className='w-[247px] h-[252px] mb-5 shadow shadow-[#878282]'>
-                        <div className='h-[75%] '>
-                            <img
-                                src={product} alt='as'
-                                className='h-full w-full'
-                            />
-                        </div>
-                        <div className='h-[25%] text-center text-black-text bg-white'>
-                            <span>Nike train speed 4</span><br />
-                            <span className='text-red-price font-semibold'>6,200,000</span>
-                        </div>
-                    </div>
-                    <div className='w-[247px] h-[252px]  mb-5 shadow shadow-[#878282]'>
-                        <div className='h-[75%] '>
-                            <img
-                                src={product} alt='as'
-                                className='h-full w-full'
-                            />
-                        </div>
-                        <div className='h-[25%] text-center text-black-text bg-white'>
-                            <span>Nike train speed 4</span><br />
-                            <span className='text-red-price font-semibold'>6,200,000</span>
-                        </div>
-                    </div>
-                    <div className='w-[247px] h-[252px]  mb-5 shadow shadow-[#878282]'>
-                        <div className='h-[75%] '>
-                            <img
-                                src={product} alt='as'
-                                className='h-full w-full'
-                            />
-                        </div>
-                        <div className='h-[25%] text-center text-black-text bg-white'>
-                            <span>Nike train speed 4</span><br />
-                            <span className='text-red-price font-semibold'>6,200,000</span>
-                        </div>
-                    </div>
-                    <div className='w-[247px] h-[252px]  mb-5 shadow shadow-[#878282]'>
-                        <div className='h-[75%]'>
-                            <img
-                                src={product} alt='as'
-                                className='h-full w-full'
-                            />
-                        </div>
-                        <div className='h-[25%] text-center text-black-text bg-white'>
-                            <span>Nike train speed 4</span><br />
-                            <span className='text-red-price font-semibold'>6,200,000</span>
-                        </div>
-                    </div>
+            <div className='h-[530px] '>
+                <div className='mx-[22%] h-full flex flex-wrap justify-between '>
+                    {
+                        props.arrProduct && props.arrProduct.length > 0 &&
+                        props.arrProduct.reverse().map((item, index) => {
+                            return (
+                                <div key={index} className='w-[247px] h-[252px]  shadow shadow-[#878282]'>
+                                    <div className='h-[75%] cursor-pointer'
+                                        onClick={() => navigate(`${path.DETAIL}${item.id}`)}
+                                    // to={`${path.DETAIL}${item.id}`}
+                                    >
+                                        <img
+                                            src={`${convertImg(item.image)}`} alt='as'
+                                            className='h-full w-full '
+                                        />
+                                        {/* <div className='h-full w-full'
+                                            style={{ backgroundImage: `url(${convertImg(item.image)})` }}></div> */}
+                                    </div>
+                                    <div className='h-[25%] text-center text-black-text bg-white'>
+                                        <span>{item.name}</span><br />
+                                        <span className='text-red-price font-semibold'>{formatPrice(item.price) + '₫'}</span>
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
                 </div>
             </div>
         </div >

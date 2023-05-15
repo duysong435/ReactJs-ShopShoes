@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { TfiAngleDoubleRight } from "react-icons/tfi";
-import { convertImg } from '../../utils/Convert';
+// import { convertImg } from '../../utils/Convert';
 
 import { isPaid, path, payment } from '../../utils/constant';
 import { getDetailService } from '../../services/productService';
 
-import img1 from '../../assets/product/product1.jpg'
+// import img1 from '../../assets/product/product1.jpg'
 import { getOrder } from '../../store/actions/authAction';
-import { deleteOrderService, getOrderDetailService, getOutCheckService } from '../../services/orderService';
+import { getOutCheckService } from '../../services/orderService';
 import { toast } from 'react-toastify';
 import { formatDate, formatPrice } from '../../utils/Format';
 
@@ -105,7 +105,7 @@ export const OrderComplete = (props) => {
                                         arrOrderDetail && arrOrderDetail.length > 0 &&
                                         arrOrderDetail.map((item, index) => {
                                             return (
-                                                <div className='flex justify-between ml-2 '>
+                                                <div key={index} className='flex justify-between ml-2 '>
                                                     <span>{item?.Order_Details?.dataProduct?.name}</span>
                                                     <span className='font-semibold text-red-400 '>{formatPrice(item?.Order_Details?.amount * item?.Order_Details?.price)}₫</span>
                                                 </div>

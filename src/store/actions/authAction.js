@@ -149,7 +149,7 @@ const authAddProduct = (data) => {
         try {
             const response = await handleAddProductService(data)
             if (response && response?.errCode === 0) {
-                toast.success('Register success!', {
+                toast.success('Đã thêm sản phẩm thành công!', {
                     position: "bottom-right",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -178,7 +178,7 @@ const authAddProduct = (data) => {
                 })
             }
         } catch (error) {
-            toast.error('Register failded!', {
+            toast.error('Sản phẩm thêm không thành công!', {
                 position: "bottom-right",
                 autoClose: 5000,
                 hideProgressBar: false,

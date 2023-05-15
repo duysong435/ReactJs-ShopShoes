@@ -77,11 +77,46 @@ const getOutCheckService = (query) => {
     })
 }
 
+const getAdminListOrderService = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = configAxios.get(`/order/admin/get-list-order`)
+            resolve(response)
+
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+const updateAdminStatusOrderService = (id, status) => {
+    return configAxios.put('/order/admin/upadte-order-status', { id, status })
+}
+
+const getAdminOrderDetail = (query) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await configAxios({
+                method: 'get',
+                url: `/order/admin/get-order-detail`,
+                params: query
+            })
+            resolve(response)
+
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 export {
     createOrder,
     createOrderDetailService,
     getOrderService,
     getOrderDetailService,
     deleteOrderService,
-    getOutCheckService
+    getOutCheckService,
+    getAdminListOrderService,
+    updateAdminStatusOrderService,
+    getAdminOrderDetail
 }

@@ -76,7 +76,7 @@ const ManageProduct = (props) => {
             title: '',
             price: '',
             description: '',
-            brand_id: '',
+            brand_id: props.arrBrand.length > 0 ? props.arrBrand[0].keyMap : '',
         })
         setImg({
             previewImgUrl: '',
@@ -211,13 +211,13 @@ const ManageProduct = (props) => {
                                         </div>
 
                                         <div className="col-span-6 sm:col-span-6">
-                                            <label htmlFor="first-name" className="block text-sm font-medium text-gray-700">
+                                            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
                                                 Tiêu đề sản phẩm
                                             </label>
                                             <input
                                                 type="text"
-                                                name="first-name"
-                                                id="first-name"
+                                                name="title"
+                                                id="title"
                                                 className="mt-1 block w-full h-8 focus:outline px-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                                 value={product.title}
                                                 onChange={(e) => setProduct({ ...product, title: e.target.value })}
@@ -417,7 +417,7 @@ const ManageProduct = (props) => {
                                         props.arrProduct && props.arrProduct.length > 0 &&
                                         props.arrProduct.map((item, index) => {
                                             return (
-                                                <tr key={index}>
+                                                <tr key={item?.id}>
                                                     <td className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap">
                                                         {index}
                                                     </td>

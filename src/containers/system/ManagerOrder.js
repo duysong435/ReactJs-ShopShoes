@@ -7,6 +7,7 @@ import {
     FaTrashAlt
 } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai"
+import { FcViewDetails } from "react-icons/fc";
 import CommonUtils from '../../utils/CommonUtils';
 import {
     authAddProduct,
@@ -16,13 +17,62 @@ import {
     fetchGender,
     getAllProduct
 } from '../../store/actions';
-import { CRUD_ACTIOND } from '../../utils/constant';
+import { getAdminListOrderService, updateAdminStatusOrderService } from '../../services/orderService';
+import { toast } from 'react-toastify';
+import { formatDate, formatPrice } from '../../utils/Format';
+import { isPaid, payment } from '../../utils/constant';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 const ManageOrder = (props) => {
+    const navigate = useNavigate()
+
+
+    const [arrListOrder, setArrListOrder] = useState([])
+
+    const getListOrder = async () => {
+        const response = await getAdminListOrderService()
+        if (response && response.errCode === 0) {
+            setArrListOrder(response?.response)
+        } else {
+            toast.error('Server Error!', {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            })
+        }
+    }
+
+    const handleStatusOrder = async (id, status) => {
+        if (status === 'S1') {
+            const response = await updateAdminStatusOrderService(id, 'S2')
+            console.log('jiupad', response)
+            setTimeout(() => {
+                getListOrder()
+
+            }, 2000)
+
+        } else {
+            const response = await updateAdminStatusOrderService(id, 'S3')
+            console.log('jiupad', response)
+            setTimeout(() => {
+                getListOrder()
+            }, 2000)
+        }
+    }
+
+    useEffect(() => {
+        getListOrder()
+    }, [])
+    console.log(arrListOrder)
 
     return (
         <div>
-            <div className="flex flex-col pb-10">
+            <div className="flex flex-col pb-10 snap-y">
                 <div className="overflow-x-auto">
                     <div className="p-1.5 w-full inline-block align-middle">
                         <div className="overflow-hidden border rounded-lg">
@@ -55,7 +105,7 @@ const ManageOrder = (props) => {
                                         </th>
                                         <th
                                             scope="col"
-                                            className="px-6 py-3 text-xs font-bold text-right text-gray-500 uppercase "
+                                            className="px-6 py-3 text-xs font-bold  text-gray-500 uppercase "
                                         >
                                             Trạng thái
                                         </th>
@@ -69,36 +119,72 @@ const ManageOrder = (props) => {
                                 </thead>
                                 <tbody className="divide-y divide-gray-200">
                                     {
-                                        props.arrProduct && props.arrProduct.length > 0 &&
-                                        props.arrProduct.map((item, index) => {
+                                        arrListOrder && arrListOrder.length > 0 &&
+                                        arrListOrder.map((item, index) => {
                                             return (
-                                                <tr key={index}>
+                                                <tr key={item?.id}>
                                                     <td className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap">
                                                         {index}
                                                     </td>
                                                     <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
-                                                        {item.name}
+                                                        <div className='flex gap-1'>
+                                                            <span className='font-semibold'>Tên:</span>
+                                                            <span>{item?.User?.firstName + ' ' + item?.User?.lastName}</span>
+                                                        </div>
+                                                        <div className='flex gap-1'>
+                                                            <span className='font-semibold'>Email:</span>
+                                                            <span>{item?.User?.email}</span>
+                                                        </div>
+                                                        <div>
+                                                            <span className='font-semibold'>SĐT:</span>
+                                                            <span>{item?.User?.phone_number}</span>
+                                                        </div>
                                                     </td>
                                                     <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
-                                                        {item.price}
+                                                        <div className='flex gap-1'>
+                                                            <span className='font-semibold'>Tổng tiền:</span>
+                                                            <span>{formatPrice(item?.total_money)}₫</span>
+                                                        </div>
                                                     </td>
                                                     <td className="px-6 py-4 text-sm text-gray-800  text-left whitespace-nowrap">
                                                         <div
-                                                            className='h-20 w-20 bg-cover'
-                                                        // style={{ backgroundImage: `url(${imgabcd(item.image)})` }}
+                                                            className='flex gap-1'
                                                         >
-
+                                                            <span className='font-semibold'>Phương thức thanh toán:</span>
+                                                            <span>{item?.payment_method === 'CASH' ? 'Tiền mặt' : payment.PAYPAL}</span>
                                                         </div>
-                                                        {/* {item.phoneNumber} */}
+                                                        <div className='flex gap-1'>
+                                                            <span className='font-semibold'>Tình trạng:</span>
+                                                            <span>{item?.is_paid ? isPaid.PAID : isPaid.UNPAID}</span>
+                                                        </div>
+                                                        {
+                                                            item?.is_paid ?
+                                                                <div className='flex gap-1'>
+                                                                    <span className='font-semibold'>Ngày thanh toán:</span>
+                                                                    <span>{formatDate(item?.paidAt)}</span>
+                                                                </div>
+                                                                : <></>
+                                                        }
                                                     </td>
-                                                    <td className="px-6 py-4 text-sm text-gray-800  text-right whitespace-nowrap">
-                                                        {item.brandId}
+                                                    <td className="px-6 py-3 text-sm text-gray-800  text-right whitespace-nowrap">
+                                                        <div className='flex  flex-col'>
+                                                            <span className='text-center'>{item?.Allcode?.valueVi}</span>
+                                                            {
+                                                                item?.Allcode?.keyMap !== 'S3' &&
+                                                                <button className='py-1 bg-yellow-200 '
+                                                                    onClick={() => { handleStatusOrder(item?.id, item?.Allcode?.keyMap) }}
+                                                                >
+                                                                    {item?.Allcode?.keyMap === 'S1' ? 'Xác nhận đơn' : 'Xác nhận hàng'}
+                                                                </button>
+                                                            }
+                                                        </div>
                                                     </td>
                                                     <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
                                                         <div className='flex justify-end gap-3'>
                                                             <div className="text-green-500 hover:text-green-700 cursor-pointer text-xl">
-                                                                <FaEdit
-                                                                // onClick={() => handleEditProduct(item)}
+                                                                <FcViewDetails
+                                                                    // onClick={() => handleEditProduct(item)}
+                                                                    onClick={() => navigate(`${item.id}`)}
                                                                 />
                                                             </div>
                                                             <div className="text-red-500 hover:text-red-700 cursor-pointer text-xl">
@@ -108,6 +194,7 @@ const ManageOrder = (props) => {
                                                                 />
                                                             </div>
                                                         </div>
+
                                                     </td>
                                                 </tr>
                                             )
@@ -120,6 +207,7 @@ const ManageOrder = (props) => {
                     </div>
                 </div>
             </div>
+            <Outlet />
         </div>
     )
 }

@@ -36,7 +36,7 @@ const Links = [
     },
     {
         name: 'Thời trang nam',
-        link: path.MEN
+        link: path.THOITRANGNAM
     },
     {
         name: 'Giày nữ',
@@ -44,7 +44,7 @@ const Links = [
     },
     {
         name: 'Thời trang nữ',
-        link: path.WOMAN
+        link: path.THOITRANGNU
     },
     {
         name: 'Liên hệ',

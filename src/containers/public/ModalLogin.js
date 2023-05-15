@@ -90,7 +90,15 @@ const ModalLogin = (props) => {
               </button>
             </div>
             <div className='text-right mr-6 my-2'>
-              <span>Bạn chưa có tài khoản<Link to={path.REGISTER} className='text-blue-500 px-1'>Đăng ký?</Link></span>
+              <span>
+                Bạn chưa có tài khoản
+                <Link to={path.REGISTER}
+                  className='text-blue-500 px-1'
+                  onClick={() => handleShowModal()}
+                >
+                  Đăng ký?
+                </Link>
+              </span>
             </div>
           </div>
         </div>

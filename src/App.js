@@ -20,7 +20,8 @@ import {
 import {
   ManageUser,
   ManagerProduct,
-  ManagerOrder
+  ManagerOrder,
+  DetailOrder
 } from "./containers/system";
 
 import Dashboard from "./containers/system/Dashboard";
@@ -48,7 +49,9 @@ function App() {
           <Route index element={<Home />} />
           <Route path={path.INTRODUCE} element={<Introduce />} />
           <Route path={path.MEN} element={<Men />} />
+          <Route path={path.THOITRANGNAM} element={<Men />} />
           <Route path={path.WOMAN} element={<Woman />} />
+          <Route path={path.THOITRANGNU} element={<Woman />} />
           <Route path={path.CONTACT} element={<Contact />} />
           <Route path={path.REGISTER} element={<Register />} />
           <Route path={path.DETAILS} element={<Detail />} />
@@ -61,7 +64,9 @@ function App() {
         <Route path={path.SYSTEM} element={<Dashboard />} >
           <Route path={path.MANAGER_USER} element={<ManageUser />} />
           <Route path={path.MANAGER_PRODUCT} element={<ManagerProduct />} />
-          <Route path={path.MANAGER_ORDER} element={<ManagerOrder />} />
+          <Route path={path.MANAGER_ORDER} element={<ManagerOrder />} >
+            <Route path={path.DETAIL_ORDER} element={<DetailOrder />} />
+          </Route>
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
