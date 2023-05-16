@@ -51,6 +51,7 @@ const Detail = (props) => {
   }, [detailProduct?.price]);
 
   console.log(cart)
+  console.log(detailProduct)
   return (
     <div>
       <div className='h-[500px] flex justify-center mx-[22%] mt-10'>
@@ -65,14 +66,14 @@ const Detail = (props) => {
         <div className=' h-full w-full'>
           <div className='mx-2'>
             <div className=''>
-              <span className='text-3xl font-semibold'>KoBe Xi</span>
+              <span className='text-3xl font-semibold'>{detailProduct?.title}</span>
             </div>
             <div>
               <span className='text-red-500 text-3xl font-semibold'>{detailProduct.price} ₫</span>
             </div>
             <div>
               <p>
-                Thiết bị Bật tắt đèn thông minh SH-D2 hoạt động bằng công nghệ cảm ứng hồng ngoại thân nhiệt. Khi người sử dụng trong vùng cảm ứng, thiết bị sẽ tự động bật đèn và tắt đèn khi không có người. Thiết bị được tích hợp tính năng cảm…
+                {detailProduct?.description}
               </p>
               <p className='text-green-text font-semibold'>
                 Thêm vào giỏ hàng để tiến hành mua hàng online:
