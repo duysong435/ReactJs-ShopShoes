@@ -207,6 +207,16 @@ const getAllUser = (query) => {
                     data: response?.response
                 })
             } else {
+                toast.error(response?.errMessage, {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
                 dispatch({
                     type: actionTypes.GET_ALL_USER_FAILDED
                 })
@@ -434,6 +444,7 @@ const editUser = (data) => {
     return async (dispatch, getState) => {
         try {
             const response = await editUserService(data)
+            console.log('sadsafjkasjkdhj', response)
             if (response && response.errCode === 0) {
                 toast.success('Edit user success!', {
                     position: "bottom-right",

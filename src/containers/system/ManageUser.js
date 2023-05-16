@@ -52,11 +52,43 @@ const ManageUser = (props) => {
 
         if (actionUser === CRUD_ACTIOND.CREATE) {
             dispatch(authRegister(user))
+            setUser({
+                id: '',
+                email: '',
+                password: '',
+                firstName: '',
+                lastName: '',
+                address: '',
+                phoneNumber: '',
+                gender: '',
+                roleId: '',
+                image: ''
+            })
         }
         if (actionUser === CRUD_ACTIOND.EDIT) {
             dispatch(editUser(user))
         }
         setActionUser(CRUD_ACTIOND.CREATE)
+        setTimeout(() => {
+            setUser({
+                id: '',
+                email: '',
+                password: '',
+                firstName: '',
+                lastName: '',
+                address: '',
+                phoneNumber: '',
+                gender: '',
+                roleId: '',
+                image: ''
+            })
+            setImg({
+                previewImgUrl: '',
+                isOpen: false
+            })
+            dispatch(getAllUser())
+        }, 2000)
+
     }
 
     const handleDeleteUser = async (id) => {
@@ -91,7 +123,7 @@ const ManageUser = (props) => {
             address: user.address,
             phoneNumber: user.phoneNumber,
             gender: user.gender,
-            roleId: user.roleId,
+            roleId: user.role_id,
             image: imageBase64
 
 
@@ -143,7 +175,7 @@ const ManageUser = (props) => {
     useEffect(() => {
         pageNumber()
     }, [countUser])
-    console.log(user)
+    console.log('sfsakpkfakfjoiasfosajopfusjaopfjopasfhposahoif', user)
     return (
         <div className='ml-2'>
             <div className="hidden sm:block" aria-hidden="true">
@@ -457,13 +489,13 @@ const ManageUser = (props) => {
                                                         {index}
                                                     </td>
                                                     <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
-                                                        {item.firstName}
+                                                        {item.firstName + ' ' + item.lastName}
                                                     </td>
                                                     <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
                                                         {item.email}
                                                     </td>
                                                     <td className="px-6 py-4 text-sm text-gray-800  text-left whitespace-nowrap">
-                                                        {item.phoneNumber}
+                                                        {item.phone_number}
                                                     </td>
                                                     <td className="px-6 py-4 text-sm text-gray-800  text-right whitespace-nowrap">
                                                         {item.address}
@@ -510,7 +542,7 @@ const ManageUser = (props) => {
                             arrPageNumber && arrPageNumber.length > 1 &&
                             arrPageNumber.map((item, index) => {
                                 return (
-                                    <li>
+                                    <li key={index}>
                                         <button
                                             className={`relative block rounded bg-transparent py-1.5 px-3 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-200 bg-neutral-400 ${active === item ? 'bg-neutral-300' : ''}`}
                                             onClick={() => handlePaginationUser(item)}

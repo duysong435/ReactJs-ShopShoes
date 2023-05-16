@@ -472,7 +472,7 @@ const ManageProduct = (props) => {
                             arrPageNumber && arrPageNumber.length > 1 &&
                             arrPageNumber.map((item, index) => {
                                 return (
-                                    <li>
+                                    <li key={index}>
                                         <button
                                             className={`relative block rounded bg-transparent py-1.5 px-3 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-200 bg-neutral-400 ${active === item ? 'bg-neutral-300' : ''}`}
                                             onClick={() => handlePaginationUser(item)}
